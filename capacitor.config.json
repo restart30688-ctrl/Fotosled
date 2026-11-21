@@ -1,0 +1,12 @@
+{
+  "appId": "ru.fotosled.game",
+  "appName": "ФОТОСЛЕД",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0A0F22"
+  }
+}
