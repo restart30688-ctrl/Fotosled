@@ -7,30 +7,41 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 34
-        run: yes | sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null
+      # SDK уже стоит на раннере GitHub — ставим только нужные пакеты,
+      # без стороннего экшена и без устаревшего пакета "tools".
+      - name: Prepare Android SDK
+        shell: bash
+        run: |
+          set -eo pipefail
+          : "${ANDROID_HOME:=/usr/local/lib/android/sdk}"
+          SDKM="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | sort -V | tail -n1)"
+          if [ -z "$SDKM" ]; then SDKM="$(command -v sdkmanager || true)"; fi
+          if [ -z "$SDKM" ]; then echo "sdkmanager not found"; exit 1; fi
+          echo "Using: $SDKM"
+          yes | "$SDKM" --licenses > /dev/null 2>&1 || true
+          "$SDKM" "platform-tools" "platforms;android-34" "build-tools;34.0.0" | tail -n 3
 
       - name: Install dependencies
         run: npm install
 
       - name: Generate Android project
-        run: npx cap add android
+        run: |
+          if [ ! -d android ]; then npx cap add android; fi
 
       - name: Patch manifest (camera, GPS, landscape) + icon
         run: node scripts/patch-android.mjs
@@ -42,7 +53,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk ../FotoSled.apk
 
       - uses: actions/upload-artifact@v4
