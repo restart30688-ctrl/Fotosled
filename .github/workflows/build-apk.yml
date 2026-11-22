@@ -5,10 +5,14 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v5
@@ -22,8 +26,6 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # SDK уже стоит на раннере GitHub — ставим только нужные пакеты,
-      # без стороннего экшена и без устаревшего пакета "tools".
       - name: Prepare Android SDK
         shell: bash
         run: |
@@ -32,9 +34,11 @@ jobs:
           SDKM="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | sort -V | tail -n1)"
           if [ -z "$SDKM" ]; then SDKM="$(command -v sdkmanager || true)"; fi
           if [ -z "$SDKM" ]; then echo "sdkmanager not found"; exit 1; fi
-          echo "Using: $SDKM"
           yes | "$SDKM" --licenses > /dev/null 2>&1 || true
-          "$SDKM" "platform-tools" "platforms;android-34" "build-tools;34.0.0" | tail -n 3
+          for i in 1 2 3; do
+            if "$SDKM" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null; then break; fi
+            echo "sdkmanager attempt $i failed, retrying"; sleep 15
+          done
 
       - name: Install dependencies
         run: npm install
@@ -43,21 +47,53 @@ jobs:
         run: |
           if [ ! -d android ]; then npx cap add android; fi
 
-      - name: Patch manifest (camera, GPS, landscape) + icon
+      - name: Patch manifest, activity, icon, gradle network settings
         run: node scripts/patch-android.mjs
 
       - name: Sync web assets
         run: npx cap sync android
 
-      - name: Build debug APK
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+          gradle-home-cache-cleanup: true
+
+      - name: Build debug APK (with retries)
+        shell: bash
         run: |
+          set -uo pipefail
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          OK=0
+          for i in 1 2 3; do
+            echo "::group::Gradle attempt $i"
+            if ./gradlew assembleDebug --no-daemon --stacktrace --warning-mode=all 2>&1 | tee ../build.log; then
+              if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then OK=1; fi
+            fi
+            echo "::endgroup::"
+            if [ "$OK" = "1" ]; then break; fi
+            echo "--- attempt $i failed, last lines ---"
+            grep -E "What went wrong|Could not (resolve|download|GET)|Caused by|error:|FAILURE" ../build.log | tail -n 25 || true
+            sleep 25
+          done
+          if [ "$OK" != "1" ]; then
+            echo "===== BUILD FAILED — key lines ====="
+            grep -nE "What went wrong|Could not (resolve|download|GET)|Caused by|error:|Execution failed|FAILURE:" ../build.log | tail -n 40 || tail -n 80 ../build.log
+            exit 1
+          fi
           cp app/build/outputs/apk/debug/app-debug.apk ../FotoSled.apk
+          ls -lh ../FotoSled.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: FotoSled-APK
           path: FotoSled.apk
           retention-days: 30
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
