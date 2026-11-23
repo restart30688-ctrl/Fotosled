@@ -17,6 +17,77 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # ШАГ 1. Показываем реальную раскладку файлов и чиним её.
+      # Если index.html / style.css / app.js лежат в корне — переносим в www/.
+      - name: Проверка файлов игры
+        shell: bash
+        run: |
+          set -uo pipefail
+          SUM="$GITHUB_STEP_SUMMARY"
+          echo "## 📂 Файлы репозитория" >> "$SUM"
+          echo '```' >> "$SUM"
+          find . -maxdepth 3 -type f -not -path "./.git/*" -not -path "./node_modules/*" | sort >> "$SUM"
+          echo '```' >> "$SUM"
+          mkdir -p www
+          for f in index.html style.css app.js; do
+            if [ ! -f "www/$f" ] && [ -f "$f" ]; then
+              mv "$f" "www/$f"
+              echo "↪ перенёс $f в www/$f"
+              echo "- перенёс \`$f\` → \`www/$f\`" >> "$SUM"
+            fi
+          done
+          if [ ! -f www/index.html ]; then
+            echo "## ❌ Ошибка: нет файла www/index.html" >> "$SUM"
+            echo "Создай файл с именем именно www/index.html" >> "$SUM"
+            exit 1
+          fi
+          if grep -q 'src="app.js"' www/index.html && [ ! -f www/app.js ]; then
+            echo "## ❌ Ошибка: index.html подключает app.js, но файла www/app.js нет" >> "$SUM"
+            exit 1
+          fi
+          if grep -q 'href="style.css"' www/index.html && [ ! -f www/style.css ]; then
+            echo "## ❌ Ошибка: нет файла www/style.css" >> "$SUM"
+            exit 1
+          fi
+          echo "## ✅ Файлы игры на месте" >> "$SUM"
+          ls -l www >> "$SUM"
+
+      # ШАГ 2. Если конфигов сборки нет — создаём их сами.
+      - name: Проверка конфигов сборки
+        shell: bash
+        run: |
+          set -uo pipefail
+          if [ ! -f package.json ]; then
+            echo "package.json отсутствовал — создаю"
+            cat > package.json <<'JSON'
+          {
+            "name": "fotosled",
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": {
+              "@capacitor/android": "^6.2.0",
+              "@capacitor/app": "^6.0.0",
+              "@capacitor/core": "^6.2.0"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^6.2.0"
+            }
+          }
+          JSON
+          fi
+          if [ ! -f capacitor.config.json ]; then
+            echo "capacitor.config.json отсутствовал — создаю"
+            cat > capacitor.config.json <<'JSON'
+          {
+            "appId": "ru.fotosled.game",
+            "appName": "ФОТОСЛЕД",
+            "webDir": "www",
+            "server": { "androidScheme": "https" },
+            "android": { "allowMixedContent": false, "backgroundColor": "#070C1C" }
+          }
+          JSON
+          fi
+
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -26,63 +97,66 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Prepare Android SDK
+      # ШАГ 3. Android SDK. Пакеты уже есть на раннере, поэтому обычно быстро.
+      - name: Android SDK
         shell: bash
         run: |
-          set -eo pipefail
+          set -uo pipefail
           : "${ANDROID_HOME:=/usr/local/lib/android/sdk}"
           SDKM="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | sort -V | tail -n1)"
           if [ -z "$SDKM" ]; then SDKM="$(command -v sdkmanager || true)"; fi
-          if [ -z "$SDKM" ]; then echo "sdkmanager not found"; exit 1; fi
+          if [ -z "$SDKM" ]; then echo "sdkmanager не найден"; exit 1; fi
           yes | "$SDKM" --licenses > /dev/null 2>&1 || true
           for i in 1 2 3; do
             if "$SDKM" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null; then break; fi
-            echo "sdkmanager attempt $i failed, retrying"; sleep 15
+            echo "sdkmanager попытка $i не удалась, повтор"; sleep 15
           done
 
-      - name: Install dependencies
+      - name: Установка зависимостей
         run: npm install
 
-      - name: Generate Android project
+      - name: Создание Android-проекта
         run: |
           if [ ! -d android ]; then npx cap add android; fi
 
-      - name: Patch manifest, activity, icon, gradle network settings
+      # ШАГ 4. Патч: разрешения, альбомная ориентация, полный экран, иконка, настройки сети Gradle.
+      - name: Патч Android-проекта
         run: node scripts/patch-android.mjs
 
-      - name: Sync web assets
+      - name: Копирование игры в приложение
         run: npx cap sync android
 
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
-          gradle-home-cache-cleanup: true
 
-      - name: Build debug APK (with retries)
+      # ШАГ 5. Сборка APK: до трёх попыток, реальная причина ошибки — в отчёт запуска.
+      - name: Сборка APK
         shell: bash
         run: |
           set -uo pipefail
+          SUM="$GITHUB_STEP_SUMMARY"
           cd android
           chmod +x gradlew
           OK=0
           for i in 1 2 3; do
-            echo "::group::Gradle attempt $i"
-            if ./gradlew assembleDebug --no-daemon --stacktrace --warning-mode=all 2>&1 | tee ../build.log; then
-              if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then OK=1; fi
-            fi
+            echo "::group::Gradle попытка $i"
+            ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../build.log
             echo "::endgroup::"
-            if [ "$OK" = "1" ]; then break; fi
-            echo "--- attempt $i failed, last lines ---"
-            grep -E "What went wrong|Could not (resolve|download|GET)|Caused by|error:|FAILURE" ../build.log | tail -n 25 || true
+            if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then OK=1; break; fi
+            echo "Попытка $i не удалась, пауза 25 с"
             sleep 25
           done
           if [ "$OK" != "1" ]; then
-            echo "===== BUILD FAILED — key lines ====="
-            grep -nE "What went wrong|Could not (resolve|download|GET)|Caused by|error:|Execution failed|FAILURE:" ../build.log | tail -n 40 || tail -n 80 ../build.log
+            echo "## ❌ Сборка не удалась — причина ниже" >> "$SUM"
+            echo '```' >> "$SUM"
+            grep -A 12 "What went wrong" ../build.log | head -n 40 >> "$SUM" || tail -n 40 ../build.log >> "$SUM"
+            echo '```' >> "$SUM"
             exit 1
           fi
           cp app/build/outputs/apk/debug/app-debug.apk ../FotoSled.apk
-          ls -lh ../FotoSled.apk
+          echo "## ✅ APK собран" >> "$SUM"
+          ls -lh ../FotoSled.apk >> "$SUM"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -90,7 +164,7 @@ jobs:
           path: FotoSled.apk
           retention-days: 30
 
-      - name: Upload build log on failure
+      - name: Лог сборки (если что-то пошло не так)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
