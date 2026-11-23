@@ -1,669 +1,83 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#7FD4FF"><title>ФОТОСЛЕД</title>
-<style>
-:root{--sky:#7FD4FF;--s2:#35B6F5;--sun:#FFD84D;--pk:#FF5FA2;--pk2:#E03C82;--lm:#8BD450;--lm2:#5FA832;--or:#FF9A3D;--or2:#E0761C;--pu:#A97BFF;--pu2:#8354E0;--cr:#FFF6E5;--pp:#FFFDF7;--ink:#4A3520;--mu:#8A7256;--sh:#E8D9BE;--f:system-ui,'Segoe UI',Roboto,sans-serif}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{position:fixed;inset:0;overscroll-behavior:none}
-body{font:700 15px/1.4 var(--f);color:var(--ink);background:var(--sky);overflow:hidden}
-button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
-input,select{font:inherit;color:inherit}
-canvas,svg,img{display:block;max-width:100%}
-::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:#FFE9C4;border-radius:10px}::-webkit-scrollbar-thumb{background:var(--pk);border-radius:10px;border:3px solid #FFE9C4}::-webkit-scrollbar-thumb:hover{background:var(--pk2)}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(#5EC8FA,#9FE4FF 45%,#DFF7C9)}
-#sun{position:absolute;right:5%;top:4%;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFF3A8,var(--sun));box-shadow:0 0 0 14px rgba(255,216,77,.35);animation:bob 5s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(10px)}}
-.cl{position:absolute;background:#fff;border-radius:50px;opacity:.9}
-.cl:before,.cl:after{content:"";position:absolute;background:#fff;border-radius:50%}
-.c1{width:120px;height:38px;top:12%;left:-140px;animation:dr 34s linear infinite}
-.c1:before{width:52px;height:52px;top:-22px;left:20px}.c1:after{width:38px;height:38px;top:-14px;left:66px}
-.c2{width:90px;height:30px;top:32%;left:-120px;animation:dr 48s linear infinite 8s}
-.c2:before{width:40px;height:40px;top:-17px;left:16px}.c2:after{width:30px;height:30px;top:-11px;left:50px}
-@keyframes dr{to{transform:translateX(118vw)}}
-#hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:36vh}
-#app{position:relative;z-index:2;display:grid;grid-template-columns:162px minmax(0,1fr);height:100%;max-width:1400px;margin:0 auto;background:rgba(255,246,229,.5);box-shadow:0 0 0 5px #fff}
-#rail{display:flex;flex-direction:column;gap:6px;padding:9px 8px;background:var(--cr);border-right:5px solid #fff;overflow-y:auto}
-.logo{display:flex;align-items:center;gap:7px;padding:2px 3px 5px;font-size:14px;font-weight:900;color:var(--pk2)}
-.logo span{font-size:22px;animation:bob 3s ease-in-out infinite}
-.nb{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:17px;font-weight:900;font-size:13px;color:var(--mu);background:#fff;box-shadow:0 4px 0 var(--sh);min-height:44px;width:100%;text-align:left}
-.nb i{font-style:normal;font-size:18px}
-.nb:active{transform:translateY(3px);box-shadow:0 1px 0 var(--sh)}
-.nb.on{background:var(--pk);color:#fff;box-shadow:0 4px 0 var(--pk2)}
-.nb b{margin-left:auto;font-size:10px;background:var(--lm);color:#fff;border-radius:9px;padding:1px 6px}
-.spc{flex:1;min-height:3px}
-#chat{display:flex;align-items:center;gap:7px;padding:9px;border-radius:17px;background:var(--s2);color:#fff;font-weight:900;font-size:12px;box-shadow:0 4px 0 #1E90CE;width:100%;min-height:44px}
-#rAg{display:flex;align-items:center;gap:7px;padding:5px;border-radius:17px;background:#fff;box-shadow:0 4px 0 var(--sh);width:100%;min-height:48px}
-#rAg b,#tAg b{font-size:11.5px;display:block;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#rAg i{font-size:9px;color:var(--pk2);font-style:normal;display:block;text-align:left}
-#main{display:flex;flex-direction:column;min-width:0;height:100%}
-#top{flex:none;height:54px;display:flex;align-items:center;gap:7px;padding:0 13px;background:#fff;border-bottom:5px solid var(--cr)}
-#vt{font-size:16px;font-weight:900;color:var(--pk2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tr{margin-left:auto;display:flex;align-items:center;gap:6px}
-.ib{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:var(--cr);box-shadow:0 4px 0 var(--sh);font-size:17px;flex:none}
-.ib:active{transform:translateY(3px);box-shadow:0 1px 0 var(--sh)}
-.ib.off{opacity:.45}
-#tAg{display:flex;align-items:center;gap:7px;height:42px;padding:0 11px 0 4px;border-radius:15px;background:var(--sun);box-shadow:0 4px 0 #E0B92F;max-width:180px}
-#tAg i{font-size:9.5px;color:#7A5C00;font-style:normal;display:block;text-align:left}
-#cont{flex:1;overflow-y:auto;padding:13px 15px 26px}
-.v{display:none}.v.on{display:block;animation:pop .28s cubic-bezier(.2,1.6,.4,1) both}
-@keyframes pop{from{opacity:0;transform:scale(.96) translateY(8px)}}
-h2.sub{font-size:12px;font-weight:900;color:var(--mu);margin:13px 0 7px}
-.pan{background:var(--pp);border:4px solid #fff;border-radius:22px;padding:13px;box-shadow:0 6px 0 rgba(180,150,110,.25)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:900;font-size:13.5px;border-radius:17px;padding:10px 15px;min-height:44px;color:#fff;background:var(--pk);box-shadow:0 5px 0 var(--pk2)}
-.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--pk2)}
-.btn:disabled{opacity:.45}
-.bs{background:var(--s2);box-shadow:0 5px 0 #1E90CE}.bs:active{box-shadow:0 1px 0 #1E90CE}
-.bg{background:var(--lm);box-shadow:0 5px 0 var(--lm2)}.bg:active{box-shadow:0 1px 0 var(--lm2)}
-.bo{background:var(--or);box-shadow:0 5px 0 var(--or2)}.bo:active{box-shadow:0 1px 0 var(--or2)}
-.bw{background:#fff;color:var(--mu);box-shadow:0 5px 0 var(--sh)}.bw:active{box-shadow:0 1px 0 var(--sh)}
-.sm{min-height:36px;padding:6px 11px;font-size:12px;border-radius:14px}.w{width:100%}.big{min-height:54px;font-size:16px}
-.row{display:flex;gap:8px;align-items:center}.g2{flex:1;min-width:0}.tn{font-size:11.5px}.mu{color:var(--mu)}
-input[type=text]{width:100%;background:#fff;border:3px solid #FFE0B2;border-radius:15px;padding:10px 12px;font-size:14px;font-weight:700;outline:none}
-input:focus{border-color:var(--pk)}
-input::placeholder{color:#C4B299}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{padding:6px 11px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--sh);font-weight:900;font-size:11.5px;min-height:34px;display:inline-flex;align-items:center;gap:5px;color:var(--mu)}
-.chip.on{background:var(--pu);color:#fff;box-shadow:0 3px 0 var(--pu2)}
-.chip i{font-style:normal;font-size:10px;background:rgba(0,0,0,.12);border-radius:7px;padding:1px 5px}
-.seg{display:flex;background:#FFEFD5;border-radius:15px;padding:4px;gap:4px}
-.seg button{flex:1;padding:7px 4px;border-radius:12px;font-weight:900;font-size:11.5px;color:var(--mu);min-height:36px}
-.seg button.on{background:var(--or);color:#fff;box-shadow:0 3px 0 var(--or2)}
-.sw{display:flex;align-items:center;gap:8px;min-height:36px}.sw input{display:none}
-.sw .t{width:46px;height:26px;border-radius:20px;background:var(--sh);position:relative;flex:none}
-.sw .t:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
-.sw input:checked+.t{background:var(--lm)}.sw input:checked+.t:after{left:23px}
-.sw span.l{font-weight:900;font-size:12.5px}
-input[type=range]{-webkit-appearance:none;width:100%;height:32px;background:transparent}
-input[type=range]::-webkit-slider-runnable-track{height:11px;border-radius:9px;background:linear-gradient(90deg,var(--lm),var(--sun),var(--pk))}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:25px;height:25px;margin-top:-7px;border-radius:50%;background:#fff;border:4px solid var(--pk)}
-input[type=range]:disabled{opacity:.4}
-select{background:#fff;border:3px solid #FFE0B2;border-radius:14px;padding:7px 10px;font-weight:900;font-size:12px;min-height:36px;outline:none}
-.av{display:inline-grid;place-items:center;flex:none;position:relative}
-.crown{position:absolute;top:-8px;right:-8px;font-size:15px;animation:bob 2s ease-in-out infinite}
-#guide{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
-.gs{flex:1;min-width:150px;display:flex;gap:9px;align-items:center;background:var(--pp);border:4px solid #fff;border-radius:20px;padding:9px 11px;box-shadow:0 5px 0 rgba(180,150,110,.22)}
-.gs.act{background:#FFF0C9;border-color:var(--sun)}.gs.done{background:#E9F9D8;border-color:var(--lm)}
-.gs b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#FFE0B2;color:var(--mu);flex:none}
-.gs.act b{background:var(--sun)}.gs.done b{background:var(--lm);color:#fff}
-.gs p{font-size:12px;font-weight:900}.gs small{display:block;font-size:10px;color:var(--mu)}
-#leadB,#strip{display:flex;align-items:center;gap:10px;padding:10px 13px;margin-bottom:11px;border-radius:22px;border:4px solid #fff;box-shadow:0 6px 0 rgba(180,150,110,.22);flex-wrap:wrap}
-#leadB{background:linear-gradient(100deg,#FFE9A8,#FFD1E6)}#strip{background:var(--pp)}
-#leadB .t{font-size:14px;font-weight:900;color:var(--pk2)}
-#strip .nm{font-size:15px;font-weight:900}#strip .rk{font-size:10.5px;font-weight:900;color:var(--or2)}
-.xpb{height:11px;border-radius:9px;background:#FFE9C4;margin-top:5px;overflow:hidden;border:2px solid #fff}
-.xpb i{display:block;height:100%;background:linear-gradient(90deg,var(--lm),var(--sun))}
-.goal{font-size:11px;font-weight:900;color:#fff;background:var(--pu);padding:7px 10px;border-radius:15px;max-width:240px;box-shadow:0 3px 0 var(--pu2)}
-.bt{display:flex;gap:8px;align-items:center;margin-bottom:11px;flex-wrap:wrap}
-#board{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:11px}
-.case{background:var(--pp);border:4px solid #fff;border-radius:20px;padding:9px;display:flex;gap:9px;position:relative;box-shadow:0 6px 0 rgba(180,150,110,.25);min-height:96px;cursor:pointer}
-.case:active{transform:translateY(3px)}
-.th{width:92px;height:70px;border-radius:14px;overflow:hidden;flex:none;background:#BFE9FF;border:3px solid #fff;display:grid;place-items:center;font-size:20px}
-.th img{width:100%;height:100%;object-fit:cover}
-.case .no{font-size:10px;color:var(--mu)}
-.case .ttl{font-size:13.5px;font-weight:900;line-height:1.2;padding-right:50px}
-.case .meta{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
-.tag{font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:9px;background:#FFE9C4;color:var(--mu)}
-.tag.rw{background:var(--sun);color:#7A5C00}
-.st{position:absolute;top:7px;right:7px;font-size:8.5px;font-weight:900;padding:4px 7px;border-radius:11px;transform:rotate(5deg);color:#fff}
-.st.new{background:var(--s2)}.st.open{background:var(--or)}.st.solved{background:var(--lm)}.st.failed{background:#FF6B6B}.st.own{background:var(--pu)}
-.del{position:absolute;bottom:5px;right:5px;width:28px;height:28px;border-radius:11px;display:grid;place-items:center;background:#FFE0E0;font-size:12px}
-.empty{grid-column:1/-1;text-align:center;padding:26px 14px}
-.two{display:grid;grid-template-columns:minmax(248px,1fr) minmax(266px,1fr);gap:13px;align-items:start}
-.pin2{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:16px;background:#fff;box-shadow:0 3px 0 var(--sh);margin-bottom:6px}
-.pin2.in{background:#E9F9D8;box-shadow:0 3px 0 var(--lm2)}.pin2.ld{background:#FFF0C9;box-shadow:0 3px 0 var(--sun)}
-.pin2.off{opacity:.5}
-.pin2 .nm{font-weight:900;font-size:12.5px}.pin2 .s{font-size:9.5px;color:var(--mu)}
-.dot2{width:9px;height:9px;border-radius:50%;background:var(--lm);flex:none;box-shadow:0 0 0 3px #E9F9D8}
-.dot2.off{background:#C9BBA6;box-shadow:0 0 0 3px #F0E6D4}
-.tick{width:32px;height:32px;border-radius:12px;background:#FFE9C4;display:grid;place-items:center;flex:none;font-size:14px;box-shadow:0 3px 0 var(--sh)}
-.tick.on{background:var(--lm);color:#fff;box-shadow:0 3px 0 var(--lm2)}
-.code{font-size:34px;font-weight:900;letter-spacing:8px;color:var(--pk2);text-align:center;background:#fff;border-radius:18px;padding:10px;box-shadow:0 4px 0 var(--sh);margin:8px 0}
-.netst{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:900;color:var(--mu);margin-bottom:8px}
-.reel{position:relative;height:158px;border-radius:22px;background:radial-gradient(circle at 50% 35%,#FFF3C4,#FFE0F0);border:4px solid #fff;display:grid;place-items:center;overflow:hidden;margin-bottom:10px}
-.reel .cur{display:flex;flex-direction:column;align-items:center;gap:4px}
-.reel .cur .nm{font-size:15px;font-weight:900}
-.reel .win{position:absolute;inset:0;display:grid;place-items:center}
-.reel .win span{font-size:15px;font-weight:900;color:#fff;background:var(--pk);border-radius:17px;padding:8px 15px;transform:rotate(-7deg);box-shadow:0 5px 0 var(--pk2);animation:pop .4s cubic-bezier(.2,2,.4,1) both}
-.ldc{display:flex;align-items:center;gap:10px;padding:10px;border-radius:18px;background:#FFF0C9;margin-bottom:8px}
-.stage{position:relative;border-radius:20px;overflow:hidden;background:#BFE9FF;border:5px solid #fff;aspect-ratio:4/3;box-shadow:0 6px 0 rgba(180,150,110,.25)}
-.stage canvas{width:100%;height:100%}
-.lh{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.lh b{width:25px;height:25px;border-radius:50%;background:var(--pk);color:#fff;font-size:12px;display:grid;place-items:center}
-.lh span{font-size:12px;font-weight:900}
-.fx{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.fxc{padding:9px 3px;border-radius:15px;background:#fff;box-shadow:0 4px 0 var(--sh);font-weight:900;font-size:11px;color:var(--mu);min-height:44px}
-.fxc.on{background:var(--s2);color:#fff;box-shadow:0 4px 0 #1E90CE}
-.sr{display:flex;align-items:center;gap:9px;margin-top:6px}.sr b{font-size:13px;font-weight:900;color:var(--pk2);min-width:44px;text-align:right}
-.note{font-size:11px;color:var(--mu);margin-top:7px}
-.dr{display:flex;gap:6px;margin-top:6px}.dr input{font-size:12.5px;padding:8px 10px}
-.pub{display:flex;align-items:center;gap:10px;background:#FFF0C9;border-radius:18px;padding:10px;margin-top:12px}
-.pub .v{font-size:17px;font-weight:900;color:var(--or2)}
-#pod{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:13px;flex-wrap:wrap}
-.pod{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 14px;border-radius:20px;background:var(--pp);border:4px solid #fff;box-shadow:0 6px 0 rgba(180,150,110,.25);min-width:116px}
-.pod.p1{background:#FFF3C4;border-color:var(--sun)}
-.pod .nm{font-size:13px;font-weight:900}.pod .xp{font-weight:900;font-size:12.5px;color:var(--lm2)}
-.rw2{overflow-x:auto;border-radius:18px;border:4px solid #fff;background:var(--pp)}
-table.rt{width:100%;border-collapse:collapse;min-width:520px}
-.rt th{font-size:10px;font-weight:900;color:var(--mu);text-align:left;padding:9px;border-bottom:3px solid #FFE9C4;white-space:nowrap}
-.rt td{padding:7px 9px;border-bottom:2px solid #FFF3E0;font-size:13px;font-weight:900}
-.rt tr.me td{background:#FFF0C9}
-.who{display:flex;align-items:center;gap:8px}.num{color:var(--s2)}.xpn{color:var(--lm2)}
-.acts{margin-left:auto;display:flex;gap:5px}
-.mb{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;background:var(--cr);box-shadow:0 3px 0 var(--sh);font-size:14px}
-.agw{display:grid;grid-template-columns:minmax(196px,232px) minmax(0,1fr);gap:12px;height:calc(100dvh - 100px)}
-.agR{display:flex;flex-direction:column;gap:10px;min-width:0;height:100%}
-.agw .pc{height:100%;overflow-y:auto}
-.agWp{flex:1;min-height:0;display:flex;flex-direction:column}
-.wi{flex:1;min-height:0;overflow-y:auto;padding-right:5px}
-.ctlrow{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
-.ctlrow h4{width:70px;font-size:10px;font-weight:900;color:var(--mu);flex:none}
-.hs6{display:flex;gap:5px;flex-wrap:wrap}
-.hbtn{padding:5px 9px;border-radius:11px;background:#fff;box-shadow:0 3px 0 var(--sh);font-size:10.5px;font-weight:900;color:var(--mu);min-height:30px}
-.hbtn.on{background:var(--s2);color:#fff;box-shadow:0 3px 0 #1E90CE}
-.wgrp{margin-bottom:10px}.wgrp h5{font-size:11px;font-weight:900;color:var(--mu);margin-bottom:6px}
-.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
-.pc{text-align:center}.ped{display:grid;place-items:center;padding:4px 0}
-.pc .nm{font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px}
-.rc{display:inline-block;font-size:11px;font-weight:900;color:#fff;background:var(--or);padding:5px 11px;border-radius:13px;margin-top:5px;box-shadow:0 3px 0 var(--or2)}
-.cg{display:flex;gap:6px;flex-wrap:wrap}
-.co{width:34px;height:34px;border-radius:13px;border:4px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.15)}
-.co.s2{width:28px;height:28px;border-radius:10px;border-width:3px}
-.co.on{border-color:var(--ink);transform:scale(1.1)}
-.wc{border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--sh);padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;min-height:98px}
-.wc.on{background:#E9F9D8;box-shadow:0 4px 0 var(--lm2)}
-.wc .wn{font-size:9.5px;font-weight:900;text-align:center;line-height:1.2}
-.wc.lk svg{filter:grayscale(1);opacity:.45}.wc .cd{font-size:8px;color:var(--mu);text-align:center}
-.wc .li2{position:absolute;top:4px;right:5px;font-size:11px}
-.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
-.stt{background:#FFF3E0;border-radius:13px;padding:6px 3px;text-align:center}.stt b{font-size:15px;font-weight:900;color:var(--pk2);display:block}.stt span{font-size:8.5px;font-weight:900;color:var(--mu)}
-.bdg{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:8px}
-.bg3{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font-size:16px;background:#FFF3E0}.bg3:not(.got){filter:grayscale(1);opacity:.4}.bg3.got{background:var(--sun)}
-.setg{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:12px;align-items:start}
-.sc2 h3{font-size:12.5px;font-weight:900;color:var(--pk2);margin-bottom:9px}
-#play,#hunt{position:fixed;inset:0;z-index:50;background:linear-gradient(#9FE4FF,#DFF7C9);display:none}
-#play.on,#hunt.on{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(276px,.9fr);gap:13px;padding:11px 15px;max-width:1400px;margin:0 auto;left:50%;transform:translateX(-50%)}
-.pl{display:flex;flex-direction:column;min-height:0;min-width:0}.pr{overflow-y:auto;min-height:0}
-.ph{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
-.bk{width:42px;height:42px;border-radius:15px;background:#fff;box-shadow:0 4px 0 var(--sh);display:grid;place-items:center;font-size:18px;flex:none}
-.cno{font-size:14px;font-weight:900}.cno small{display:block;font-size:10px;color:var(--mu)}
-.pw{margin-left:auto;display:flex;gap:6px}
-.pot,.tmr{display:flex;flex-direction:column;align-items:center;padding:4px 10px;border-radius:15px;background:#fff;box-shadow:0 4px 0 var(--sh)}
-.pot span,.tmr span{font-size:8px;font-weight:900;color:var(--mu)}.pot b{font-size:15px;font-weight:900;color:var(--or2)}.tmr b{font-size:14px;font-weight:900;color:var(--s2)}
-.psb{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
-.psb .stage{width:min(100%,calc((100dvh - 152px)*1.3333))}
-.hint{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);z-index:4;font-size:10.5px;font-weight:900;color:#fff;background:var(--pu);padding:5px 11px;border-radius:13px;pointer-events:none}
-.bs2{position:absolute;inset:0;z-index:5;display:grid;place-items:center;pointer-events:none}
-.bs2 span{font-size:clamp(17px,3.4vw,26px);font-weight:900;padding:11px 19px;border-radius:20px;transform:rotate(-8deg);color:#fff;animation:pop .45s cubic-bezier(.2,2,.4,1) both}
-.bs2.win span{background:var(--lm);box-shadow:0 7px 0 var(--lm2)}.bs2.lose span{background:#FF6B6B;box-shadow:0 7px 0 #D94A4A}
-.slots{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:8px}
-.sl{width:25px;height:31px;border-radius:10px;background:#fff;box-shadow:0 3px 0 var(--sh);display:grid;place-items:center;font-size:15px;font-weight:900;color:var(--lm2)}
-.sl.h{color:transparent;background:#FFE9C4}.sl.sp{background:none;box-shadow:none;width:9px}
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
-.pb{border-radius:16px;background:#fff;box-shadow:0 5px 0 var(--sh);padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:70px}
-.pb i{font-style:normal;font-size:19px}.pb .t{font-weight:900;font-size:10.5px}.pb .c{font-size:9.5px;font-weight:900;color:var(--pk2)}
-.pb:disabled{opacity:.45}.pb.on{background:#E9F9D8;box-shadow:0 5px 0 var(--lm2)}
-.gps{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:#E9F9D8;border-radius:16px;padding:8px 10px}
-.heat{font-weight:900;font-size:12px}.heat small{display:block;font-size:10px;color:var(--mu)}
-.quiz{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-.opt{padding:11px 8px;border-radius:16px;background:#fff;box-shadow:0 5px 0 var(--sh);font-weight:900;font-size:12.5px;min-height:52px}
-.opt.bad{background:#FFE0E0;box-shadow:0 5px 0 #FFB3B3;opacity:.7}.opt.good{background:var(--lm);color:#fff;box-shadow:0 5px 0 var(--lm2)}
-.fa{display:flex;gap:6px;margin-bottom:10px}
-.att{display:flex;align-items:center;gap:7px;margin-bottom:10px}
-.dots{display:flex;gap:4px}.dot{width:13px;height:13px;border-radius:50%;background:var(--pk)}.dot.off{background:#FFE9C4}
-.pfr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pft{width:62px;height:46px;border-radius:13px;object-fit:cover;border:3px solid var(--lm)}
-.ar2{text-align:center;margin:8px 0 10px}.ar2 .a{font-size:19px;font-weight:900;color:var(--lm2)}.ar2 .a.bad{color:#E05555}
-.brk{background:#FFF3E0;border-radius:16px;padding:10px 12px;margin-bottom:10px}
-.bl{display:flex;justify-content:space-between;font-size:12.5px;font-weight:900;padding:3px 0;color:var(--mu)}.bl b{color:var(--ink)}
-.bl.neg b{color:#E05555}.bl.pos b{color:var(--lm2)}.bl.tot{border-top:3px dashed #FFE0B2;margin-top:5px;padding-top:7px}.bl.tot b{font-size:19px;color:var(--or2)}
-.rb{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.rb .btn{flex:1;min-width:108px}
-.rhud{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
-.rh{flex:1;min-width:62px;background:#fff;border-radius:15px;padding:5px 7px;text-align:center;box-shadow:0 4px 0 var(--sh)}
-.rh span{font-size:8px;font-weight:900;color:var(--mu);display:block}.rh b{font-size:17px;font-weight:900;color:var(--lm2)}
-.rbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
-#rcv{width:min(100%,calc(100dvh - 142px));aspect-ratio:1;border-radius:50%;touch-action:none;border:6px solid #fff;box-shadow:0 8px 0 rgba(180,150,110,.3)}
-.rov{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,246,229,.93);border-radius:50%;z-index:4;text-align:center;padding:18px}
-.rov h3{font-size:18px;font-weight:900;color:var(--lm2);margin-bottom:7px}.rov.lose h3{color:#E05555}
-.rov p{font-size:12px;color:var(--mu);margin-bottom:12px}
-.seek{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:16px;background:#fff;box-shadow:0 3px 0 var(--sh);margin-bottom:6px}
-.seek.found{background:#E9F9D8;box-shadow:0 3px 0 var(--lm2)}
-.seek .nm{font-weight:900;font-size:12.5px}.seek .s{font-size:9.5px;color:var(--mu)}
-.sbtn{width:32px;height:32px;border-radius:12px;background:var(--cr);box-shadow:0 3px 0 var(--sh);display:grid;place-items:center;flex:none;font-size:13px}
-.sbtn.on{background:var(--lm);color:#fff}
-#modal{position:fixed;inset:0;z-index:70;display:none}#modal.on{display:block}
-.scr{position:absolute;inset:0;background:rgba(74,53,32,.5)}
-#mc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(94vw,530px);max-height:90dvh;overflow-y:auto;background:var(--pp);border:5px solid #fff;border-radius:24px;padding:16px 15px;box-shadow:0 12px 0 rgba(180,150,110,.3)}
-.mt{font-size:15px;font-weight:900;color:var(--pk2);margin-bottom:11px;display:flex;align-items:center;gap:8px}
-.mx{margin-left:auto;width:32px;height:32px;border-radius:12px;background:#FFE0E0;font-size:14px}
-.mbs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.mbs .btn{flex:1;min-width:108px}
-.pk{display:flex;align-items:center;gap:10px;width:100%;padding:9px;border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--sh);margin-bottom:7px;text-align:left}
-.pk .nm{font-size:13.5px;font-weight:900}.pk .rk{font-size:10px;color:var(--mu)}
-.err2{color:#E05555;font-size:11.5px;font-weight:900;margin-top:6px}
-#toasts{position:fixed;bottom:13px;left:50%;transform:translateX(-50%);width:min(92vw,490px);z-index:88;display:flex;flex-direction:column;gap:7px;pointer-events:none}
-.toast{pointer-events:auto;display:flex;align-items:center;gap:9px;background:#fff;border:4px solid var(--lm);border-radius:18px;padding:9px 12px;font-size:12.5px;font-weight:900;box-shadow:0 6px 0 rgba(180,150,110,.3);animation:pop .3s cubic-bezier(.2,1.7,.4,1) both}
-.toast .ac{margin-left:auto;font-weight:900;font-size:11px;color:#fff;background:var(--s2);padding:5px 9px;border-radius:12px}
-#fx{position:fixed;inset:0;z-index:92;pointer-events:none}
-#ob{position:fixed;inset:0;z-index:96;background:linear-gradient(#5EC8FA,#DFF7C9);display:none;align-items:center;justify-content:center;padding:15px}
-#ob.on{display:flex}
-.obg{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(236px,.9fr);gap:18px;width:min(100%,880px);max-height:94dvh;overflow-y:auto;align-items:center}
-.obg h1{font-size:clamp(26px,5vw,42px);font-weight:900;color:#fff;text-shadow:0 4px 0 var(--pk2)}
-.obg>div>p{color:#2C5A7A;font-size:13.5px;margin:9px 0 13px}
-.obs{display:flex;gap:10px;align-items:center;background:var(--pp);border:4px solid #fff;border-radius:18px;padding:9px 11px;margin-bottom:7px;box-shadow:0 5px 0 rgba(180,150,110,.25)}
-.obs b{width:30px;height:30px;border-radius:50%;background:var(--pk);color:#fff;font-size:14px;display:grid;place-items:center;flex:none}
-.obs p{font-size:12.5px;font-weight:900;margin:0}.obs small{display:block;color:var(--mu);font-size:10.5px}
-.obc{background:var(--pp);border:5px solid #fff;border-radius:24px;padding:15px;text-align:center;box-shadow:0 10px 0 rgba(180,150,110,.3)}
-#rot{position:fixed;inset:0;z-index:97;background:linear-gradient(#5EC8FA,#DFF7C9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:15px;text-align:center;padding:22px}
-#rot h2{font-size:18px;font-weight:900;color:#fff;text-shadow:0 3px 0 var(--pk2)}#rot p{color:#2C5A7A;font-size:13px;max-width:290px}
-#rot .ph{font-size:58px;animation:rt2 2.6s ease-in-out infinite}
-@keyframes rt2{0%,25%{transform:rotate(0)}60%,100%{transform:rotate(90deg)}}
-#err{position:fixed;left:10px;right:10px;bottom:10px;z-index:99;display:none;background:#FFE0E0;border:4px solid #FF6B6B;border-radius:18px;padding:12px;font-size:12.5px}
-#err b{color:#D94A4A;display:block;margin-bottom:6px}
-#errMsg{display:block;font-size:11px;word-break:break-word;margin-bottom:8px}
-@media (orientation:portrait){#rot{display:flex}body.rok #rot{display:none}}
-@media (max-width:640px){#app{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}#rail{flex-direction:row;align-items:center;border-right:none;border-bottom:5px solid #fff;overflow-x:auto}.logo span,.spc,#chat span,#rAg span{display:none}.logo{font-size:11px}.nb{width:auto}.nb span{display:none}#chat,#rAg{width:auto}#main{height:auto;min-height:0}.two,.obg{grid-template-columns:1fr}.agw{height:auto;grid-template-columns:1fr}.agw .pc,.agR{height:auto}.wi{overflow:visible}#play.on,#hunt.on{grid-template-columns:1fr;overflow-y:auto}.pr{overflow:visible}.psb .stage{width:100%}#rcv{width:min(100%,320px)}}
-@media (max-height:430px){.nb{min-height:37px;padding:5px 9px;font-size:12px}#top{height:47px}#cont{padding:9px 12px 16px}.agw{height:calc(100dvh - 76px)}.psb .stage{width:min(100%,calc((100dvh - 134px)*1.3333))}#rcv{width:min(100%,calc(100dvh - 124px))}.reel{height:126px}.ctlrow{margin-bottom:4px}}
-</style></head><body>
+<meta name="theme-color" content="#7FD4FF">
+<title>ФОТОСЛЕД</title>
+<link rel="stylesheet" href="app.css" onerror="FSMISS.push('app.css')">
+<script>
+window.FSMISS = [];
+window.addEventListener("error", function (e) {
+  if (e && e.message) { window.FSERR = (e.message || "?") + " · строка " + (e.lineno || "?"); }
+}, true);
+</script>
+</head>
+<body>
 <div id="bg"><div id="sun"></div><div class="cl c1"></div><div class="cl c2"></div>
 <svg id="hills" viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0 150Q150 80 320 140T650 120T950 150T1200 110V300H0Z" fill="#8FD96A"/><path d="M0 200Q200 140 420 195T800 175T1200 205V300H0Z" fill="#6FC24A"/><path d="M0 250Q250 215 520 250T1000 240T1200 260V300H0Z" fill="#4E9E2E"/><g><rect x="150" y="185" width="10" height="55" fill="#8A5A32"/><circle cx="155" cy="175" r="34" fill="#5FB83C"/><circle cx="132" cy="188" r="22" fill="#6FC24A"/><circle cx="178" cy="188" r="22" fill="#6FC24A"/></g><g><rect x="1040" y="195" width="10" height="55" fill="#8A5A32"/><circle cx="1045" cy="185" r="30" fill="#5FB83C"/><circle cx="1024" cy="196" r="20" fill="#6FC24A"/><circle cx="1066" cy="196" r="20" fill="#6FC24A"/></g></svg></div>
-<div id="app"><aside id="rail">
-<div class="logo"><span>🎒</span>ФОТОСЛЕД</div>
-<button class="nb on" data-act="nav" data-v="hq"><i>🏠</i><span>Штаб</span></button>
-<button class="nb" data-act="nav" data-v="squad"><i>🌐</i><span>Отряд</span><b id="netBadge">0</b></button>
-<button class="nb" data-act="nav" data-v="lab"><i>📷</i><span>Создать</span></button>
-<button class="nb" data-act="nav" data-v="rate"><i>🏆</i><span>Рейтинг</span></button>
-<button class="nb" data-act="nav" data-v="agent"><i>🎨</i><span>Агент</span></button>
-<button class="nb" data-act="nav" data-v="set"><i>⚙️</i><span>Настройки</span></button>
-<div class="spc"></div><button id="chat" data-act="chat">💬<span>Чат отряда</span></button>
-<button id="rAg" data-act="nav" data-v="agent"><span class="av" id="rAv"></span><span class="g2"><b id="rNm">Агент</b><i id="rRk">Новичок</i></span></button>
-</aside><div id="main"><header id="top"><div id="vt">ДОСКА ДЕЛ</div><div class="tr">
-<button class="ib" data-act="help">❓</button><button class="ib" data-act="full">⛶</button><button class="ib" id="sndB" data-act="sound">🔊</button>
-<button id="tAg" data-act="nav" data-v="agent"><span class="av" id="tAv"></span><span class="g2"><b id="tNm">Агент</b><i id="tXp">0 XP</i></span></button>
-</div></header><div id="cont">
-<section class="v on" id="v-hq"><div id="guide"></div><div id="leadB"></div><div id="strip"></div>
-<div class="bt"><button class="btn bs sm" data-act="import">📥 Файл дела</button><input type="text" id="q" data-inp="q" class="g2" placeholder="Поиск дела…" style="min-width:120px"><div class="chips" id="chips"></div><select id="sort" data-chg="sort"><option value="new">Новые</option><option value="reward">Награда ↓</option><option value="diff">Сложность ↑</option></select></div><div id="board"></div></section>
-<section class="v" id="v-squad"><div id="net"></div><div class="two" style="margin-top:12px"><div id="sqL"></div><div id="sqR"></div></div></section>
-<section class="v" id="v-lab"><div class="two"><div><div class="lh"><b>1</b><span>КАДР</span></div>
-<div class="stage"><canvas id="lc" width="480" height="360"></canvas></div>
-<div class="row" style="margin-top:8px"><button class="btn g2" data-act="capture">📸 Снять место</button><button class="btn bw sm" id="clrB" data-act="clearphoto" style="display:none">✕</button></div>
-<p class="note" id="note"></p><div style="margin-top:8px"><span class="chip" id="auth"></span></div></div>
-<div><div class="lh"><b>2</b><span>ШИФР</span></div><div class="fx" id="fch"></div>
-<div class="sr"><span class="tn">СИЛА</span><input type="range" id="strR" data-inp="str" min="10" max="95" value="62"><b id="strV">62%</b></div>
-<label class="sw"><input type="checkbox" id="mirC" data-chg="mir"><span class="t"></span><span class="l">Зеркало</span></label>
-<div class="row" style="margin-top:6px"><button class="btn bs sm g2" data-act="dice">🎲 Случайно</button><button class="btn bw sm g2" data-act="resetfx">↺ Сброс</button></div>
-<div class="lh" style="margin-top:12px"><b>3</b><span>ЗАГАДКА</span></div><input type="text" id="ansI" maxlength="42" placeholder="Что это за место?">
-<div class="dr"><input type="text" class="dec" maxlength="36" placeholder="Неверный вариант 1"><input type="text" class="dec" maxlength="36" placeholder="Неверный вариант 2"></div>
-<div class="dr"><input type="text" class="dec" maxlength="36" placeholder="Неверный вариант 3"><button class="btn bw sm" data-act="decdice">🎲</button></div>
-<h2 class="sub">Сложность</h2><div class="seg" id="diffS"><button data-act="diff" data-d="1">Легко</button><button data-act="diff" data-d="2" class="on">Средне</button><button data-act="diff" data-d="3">Сложно</button></div>
-<h2 class="sub">GPS «горячо-холодно»</h2><div class="row" style="flex-wrap:wrap"><button class="btn bg sm" id="pinB" data-act="pin">📍 Пин точки</button><span class="chip" id="pinI" style="display:none"></span></div>
-<div class="sr"><span class="tn">РАДИУС</span><input type="range" id="radR" data-inp="rad" min="30" max="200" step="10" value="60" disabled><b id="radV">60 м</b></div>
-<div class="pub"><div><div class="tn mu">НАГРАДА</div><div class="v" id="rwV">180 XP</div></div><button class="btn bo g2" data-act="publish">🚀 Опубликовать</button></div></div></div></section>
-<section class="v" id="v-rate"><div id="pod"></div><div class="rw2"><table class="rt"><thead><tr><th>#</th><th>Агент</th><th>XP</th><th>Нашёл</th><th>Создал</th><th>Вёл</th><th>Рекорд</th></tr></thead><tbody id="rb"></tbody></table></div><p class="note">Рейтинг общий для всего подключённого отряда.</p></section>
-<section class="v" id="v-agent"><div class="agw"><div class="pan pc" id="agL"></div>
-<div class="agR"><div class="pan" id="agC"></div><div class="pan agWp"><h2 class="sub" style="margin-top:0">🎁 ГАРДЕРОБ · открывается за успехи</h2><div class="wi" id="agW"></div></div></div></div></section>
-<section class="v" id="v-set"><div class="setg">
-<div class="pan sc2"><h3>💬 ЧАТ ОТРЯДА В MAX</h3><p class="tn mu" style="margin-bottom:8px">Ссылка на ваш чат — кнопка слева откроет его в приложении.</p><input type="text" id="chatI" placeholder="https://max.ru/join/…"><div class="row" style="margin-top:8px"><button class="btn sm g2" data-act="chatsave">Сохранить</button><button class="btn bs sm g2" data-act="chat">Открыть</button></div><p class="note" id="cst"></p></div>
-<div class="pan sc2"><h3>🔊 ЗВУК И ЭКРАН</h3><label class="sw"><input type="checkbox" id="sndT" data-chg="snd"><span class="t"></span><span class="l">Звуки</span></label><label class="sw"><input type="checkbox" id="vibT" data-chg="vib"><span class="t"></span><span class="l">Вибрация</span></label><label class="sw"><input type="checkbox" id="afT" data-chg="af"><span class="t"></span><span class="l">Полный экран</span></label><button class="btn bs sm w" data-act="full" style="margin-top:8px">⛶ На весь экран</button><button class="btn bw sm w" data-act="help" style="margin-top:6px">❓ Как играть</button></div>
-<div class="pan sc2"><h3>🌐 СЕТЬ</h3><p class="tn mu" id="netInfo"></p><button class="btn bw sm w" data-act="nav" data-v="squad" style="margin-top:8px">Открыть отряд</button></div>
-<div class="pan sc2"><h3>🗑 ДАННЫЕ</h3><p class="tn mu" style="margin-bottom:8px">Сброс удалит профиль, отряд и прогресс.</p><button class="btn bw sm w" data-act="wipe">Сбросить всё</button><p class="note" id="build"></p></div></div></section>
-</div></div></div>
-<div id="play"></div><div id="hunt"></div><div id="modal"><div class="scr" data-act="closem"></div><div id="mc"></div></div>
-<div id="toasts"></div><canvas id="fx"></canvas>
-<div id="ob"><div class="obg"><div><h1>ФОТОСЛЕД</h1><p>Приключение на улице! Сфотографируй место, спрячь его за шифром — и друзья побегут искать.</p>
-<div class="obs"><b>1</b><p>Создай отряд<small>Получишь код из 4 цифр</small></p></div><div class="obs"><b>2</b><p>Друзья вводят код<small>Все видны в списке отряда</small></p></div><div class="obs"><b>3</b><p>Охота!<small>Ведущий шифрует, остальные ищут</small></p></div></div>
-<div class="obc"><div class="ped" id="obAv"></div><input type="text" id="obName" maxlength="16" placeholder="Твоё имя" style="margin-bottom:8px">
-<div class="seg" id="obG" style="margin-bottom:8px"><button data-act="obg" data-g="m">Мальчик</button><button data-act="obg" data-g="f" class="on">Девочка</button></div>
-<div class="cg" id="obS" style="justify-content:center;margin-bottom:10px"></div><button class="btn big w" data-act="obgo">🚀 НАЧАТЬ!</button><p class="note">Поверни телефон горизонтально</p></div></div></div>
-<div id="rot"><div class="ph">📱</div><h2>ПОВЕРНИ ТЕЛЕФОН!</h2><p>Так видно и фото, и радар, и все кнопки.</p><button class="btn bs" data-act="rok">Играть вертикально</button></div>
-<div id="err"><b>ДИАГНОСТИКА</b><span id="errMsg"></span><div class="row"><button class="btn bs sm g2" data-act="reload">Перезапустить</button><button class="btn sm g2" data-act="wipe">Сбросить</button></div></div>
-<script>
-window.FSERR=0;
-function fsShow(t){var d=document.getElementById("err"),m=document.getElementById("errMsg");if(d){d.style.display="block";if(m)m.textContent=t}}
-window.addEventListener("error",function(e){window.FSERR=1;fsShow((e.message||"Ошибка")+" · строка "+(e.lineno||"?")+":"+(e.colno||"?"))},true);
-window.addEventListener("unhandledrejection",function(e){window.FSERR=1;fsShow("Promise: "+((e.reason&&e.reason.message)||e.reason||"?"))});
-setTimeout(function(){if(window.FSERR)return;if(!window.FSSTART)fsShow("Скрипт не запустился: файл index.html повреждён.");else if(!window.FSEND)fsShow("Файл обрывается до конца скрипта — скопирована не вся длина текста.")},3500);
-</script>
-<script>
-window.FSSTART=1;
-(function(){"use strict";
-var Q=function(s){return document.querySelector(s)},A=function(s){return [].slice.call(document.querySelectorAll(s))};
-function E(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function C(v,a,b){return Math.min(b,Math.max(a,v))}
-function U(){return Math.random().toString(36).slice(2,8)}
-function N(s){return String(s||"").toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-я0-9]/gi,"")}
-function T(ms){var s=Math.max(0,Math.floor(ms/1000));return("0"+Math.floor(s/60)).slice(-2)+":"+("0"+(s%60)).slice(-2)}
-function H(s){var h=5381,i;for(i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h}
-function R(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function SH(x,r){x=x.slice();for(var i=x.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=x[i];x[i]=x[j];x[j]=t}return x}
-function DV(a,b,c,d){var r=function(v){return v*Math.PI/180},x=r(c-a),y=r(d-b),h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(r(a))*Math.cos(r(c))*Math.sin(y/2)*Math.sin(y/2);return 12742000*Math.asin(Math.sqrt(h))}
-function DK(h,k){var n=parseInt(h.slice(1),16);return"#"+((1<<24)+(C(Math.round((n>>16&255)*k),0,255)<<16)+(C(Math.round((n>>8&255)*k),0,255)<<8)+C(Math.round((n&255)*k),0,255)).toString(16).slice(1)}
-function VB(p){try{if(D.set.vib&&navigator.vibrate)navigator.vibrate(p)}catch(e){}}
-var S={c:null,g:null,i:function(){if(this.c)return;try{var K=window.AudioContext||window.webkitAudioContext;this.c=new K();this.g=this.c.createGain();this.g.gain.value=D.set.snd?.8:0;this.g.connect(this.c.destination)}catch(e){}},
-t:function(f,d,y,v,w){if(!this.c)return;var t=this.c.currentTime+(w||0),o=this.c.createOscillator(),g=this.c.createGain();o.type=y||"sine";o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v||.15,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(this.g);o.start(t);o.stop(t+d+.02)},
-p:function(k){if(!this.c||!D.set.snd)return;if(this.c.state==="suspended")this.c.resume();var F,i;
-if(k==="tap")this.t(880,.06,"sine",.12);
-else if(k==="ok"){F=[660,880,1100];for(i=0;i<3;i++)this.t(F[i],.12,"triangle",.16,i*.07)}
-else if(k==="no")this.t(180,.22,"sawtooth",.14);
-else if(k==="win"){F=[523,659,784,1047,1319];for(i=0;i<5;i++)this.t(F[i],.16,"triangle",.17,i*.09)}
-else if(k==="shot")this.t(1400,.05,"square",.14);
-else if(k==="hint")this.t(1000,.09,"sine",.13);
-else if(k==="hit")this.t(1200,.08,"triangle",.15);
-else if(k==="join"){F=[784,1047];for(i=0;i<2;i++)this.t(F[i],.14,"sine",.15,i*.1)}
-else if(k==="crown"){F=[523,784,1047,1319];for(i=0;i<4;i++)this.t(F[i],.2,"sine",.16,i*.11)}}};
-document.addEventListener("pointerdown",function(){S.i();if(S.c&&S.c.state==="suspended")S.c.resume()},{passive:true});
-var AC=["#FF5FA2","#FFD84D","#8BD450","#35B6F5","#A97BFF","#FF9A3D"],SK=["#FFE0BD","#F8C99B","#E0A878","#C08552","#96603A","#6E4429"],HC=["#3A2418","#7A4A22","#C98A3C","#FFD84D","#FF5FA2","#35B6F5"],EC=["#6B4423","#3E9B4F","#35B6F5","#8A93B8","#A97BFF","#FF9A3D"];
-var HR=[["short","Короткие"],["spike","Ёжик"],["bob","Каре"],["pony","Хвостик"],["curl","Кудри"],["long","Длинные"]],GN=[["m","Мальчик"],["f","Девочка"]];
-function DL(){return{g:"f",skin:1,hair:"short",hc:0,eye:2,acc:AC[0],hat:"none",gls:"none",frm:"none"}}
-function HB(s,c){if(s==="bob")return'<path d="M22 48Q22 14 50 14Q78 14 78 48L78 68Q70 60 68 46L32 46Q30 60 22 68Z" fill="'+c+'"/>';if(s==="long")return'<path d="M20 48Q20 12 50 12Q80 12 80 48L84 94Q66 84 64 50L36 50Q34 84 16 94Z" fill="'+c+'"/>';if(s==="pony")return'<ellipse cx="82" cy="54" rx="10" ry="18" fill="'+c+'"/><circle cx="72" cy="40" r="5" fill="#FF5FA2"/>';if(s==="curl")return'<circle cx="24" cy="44" r="11" fill="'+c+'"/><circle cx="76" cy="44" r="11" fill="'+c+'"/>';return""}
-function HF(s,c){if(s==="spike")return'<path d="M25 42L29 20L36 33L43 16L50 31L57 16L64 33L71 20L75 42Q68 29 50 27Q32 29 25 42Z" fill="'+c+'"/>';if(s==="curl")return'<circle cx="33" cy="26" r="11" fill="'+c+'"/><circle cx="45" cy="19" r="11" fill="'+c+'"/><circle cx="57" cy="19" r="11" fill="'+c+'"/><circle cx="68" cy="26" r="11" fill="'+c+'"/>';if(s==="long")return'<path d="M25 42Q27 12 50 12Q73 12 75 42Q66 24 50 24Q38 24 32 33Q28 37 25 42Z" fill="'+c+'"/>';return'<path d="M25 42Q27 15 50 15Q73 15 75 42Q68 28 50 26Q32 28 25 42Z" fill="'+c+'"/>'}
-var HT={cap:function(c){return'<path d="M25 30Q50 4 75 30Z" fill="'+c+'"/><rect x="46" y="26" width="31" height="8" rx="4" fill="'+DK(c,.75)+'"/>'},crown:function(){return'<path d="M28 29L31 9L41 20L50 4L59 20L69 9L72 29Z" fill="#FFD84D" stroke="#E0B92F" stroke-width="2"/><circle cx="50" cy="24" r="3" fill="#FF5FA2"/>'},lcrown:function(c){return'<path d="M27 28L30 11L40 21L50 7L60 21L70 11L73 28Z" fill="'+c+'" stroke="#fff" stroke-width="2"/><circle cx="50" cy="21" r="3.4" fill="#FFD84D"/>'},panama:function(c){return'<ellipse cx="50" cy="30" rx="30" ry="8" fill="#FFE9A8"/><path d="M31 29Q50 3 69 29Z" fill="#FFF3C4"/><rect x="32" y="22" width="36" height="7" fill="'+c+'"/>'}};
-var GL={round:'<circle cx="40" cy="50" r="9" fill="rgba(255,255,255,.35)" stroke="#4A3520" stroke-width="3"/><circle cx="60" cy="50" r="9" fill="rgba(255,255,255,.35)" stroke="#4A3520" stroke-width="3"/><path d="M49 50h2" stroke="#4A3520" stroke-width="3"/>',sun:'<rect x="30" y="43" width="19" height="13" rx="6" fill="#4A3520"/><rect x="51" y="43" width="19" height="13" rx="6" fill="#4A3520"/><path d="M49 47h2" stroke="#4A3520" stroke-width="3"/>',star:'<path d="M40 41l3 6 6 1-4.5 4.5 1 6-5.5-3-5.5 3 1-6L31 48l6-1z" fill="#FFD84D"/><path d="M60 41l3 6 6 1-4.5 4.5 1 6-5.5-3-5.5 3 1-6L51 48l6-1z" fill="#FFD84D"/>'};
-var FR={pink:'<circle cx="50" cy="50" r="46" fill="none" stroke="#FF5FA2" stroke-width="5"/>',gold:'<circle cx="50" cy="50" r="46" fill="none" stroke="#FFD84D" stroke-width="6"/>',rain:'<circle cx="50" cy="50" r="46" fill="none" stroke="#8BD450" stroke-width="5" stroke-dasharray="10 6"/>'};
-var AN=0;
-function AV(l,s){var L=Object.assign(DL(),l||{}),sk=SK[C(L.skin|0,0,5)],hc=HC[C(L.hc|0,0,5)],ec=EC[C(L.eye|0,0,5)],ac=L.acc||AC[0],m=L.g==="m",f=!m,w=m?25:22,j=m?15:11,g="a"+(++AN);
-var h="M"+(50-w)+" 44 Q"+(50-w)+" 20 50 20 Q"+(50+w)+" 20 "+(50+w)+" 44 Q"+(50+w)+" 62 "+(50+j)+" 75 Q50 83 "+(50-j)+" 75 Q"+(50-w)+" 62 "+(50-w)+" 44Z";
-return'<svg viewBox="0 0 100 100" width="'+s+'" height="'+s+'"><defs><radialGradient id="'+g+'" cx="50%" cy="34%" r="78%"><stop offset="0" stop-color="'+ac+'" stop-opacity=".85"/><stop offset="1" stop-color="'+DK(ac,.7)+'"/></radialGradient><clipPath id="'+g+'c"><circle cx="50" cy="50" r="47"/></clipPath></defs><circle cx="50" cy="50" r="47" fill="url(#'+g+')"/><g clip-path="url(#'+g+'c)"><path d="M14 100Q20 84 38 78L62 78Q80 84 86 100Z" fill="'+DK(ac,.85)+'"/><rect x="44" y="68" width="12" height="14" fill="'+DK(sk,.92)+'"/><path d="M42 78L50 88L58 78Z" fill="'+sk+'"/>'+HB(L.hair,hc)+'<circle cx="'+(50-w)+'" cy="52" r="5" fill="'+sk+'"/><circle cx="'+(50+w)+'" cy="52" r="5" fill="'+sk+'"/><path d="'+h+'" fill="'+sk+'"/><path d="M32 40Q40 35 47 40M53 40Q60 35 68 40" stroke="'+hc+'" stroke-width="'+(m?4:3)+'" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="50" rx="7" ry="'+(f?7.5:6.5)+'" fill="#fff"/><ellipse cx="60" cy="50" rx="7" ry="'+(f?7.5:6.5)+'" fill="#fff"/><circle cx="41" cy="51" r="4.2" fill="'+ec+'"/><circle cx="61" cy="51" r="4.2" fill="'+ec+'"/><circle cx="41" cy="51" r="2" fill="#2A1A10"/><circle cx="61" cy="51" r="2" fill="#2A1A10"/><circle cx="42.6" cy="49" r="1.5" fill="#fff"/><circle cx="62.6" cy="49" r="1.5" fill="#fff"/>'+(f?'<path d="M32 43l-4-3M68 43l4-3" stroke="#3A2418" stroke-width="2" stroke-linecap="round"/>':'')+'<path d="M42 64Q50 72 58 64" stroke="#C4685A" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="31" cy="60" r="5" fill="#FF9EB5" opacity=".55"/><circle cx="69" cy="60" r="5" fill="#FF9EB5" opacity=".55"/>'+HF(L.hair,hc)+(HT[L.hat]?HT[L.hat](ac):"")+(GL[L.gls]||"")+'</g>'+(FR[L.frm]||"")+'</svg>'}
-var RK=[[0,"Новичок"],[150,"Следопыт"],[400,"Искатель"],[800,"Детектив"],[1400,"Эксперт"],[2200,"Знаток"]];
-var IT=[{id:"cap",c:"hat",n:"Кепка",t:"rank",v:1},{id:"panama",c:"hat",n:"Панама",t:"solved",v:3},{id:"crown",c:"hat",n:"Корона",t:"rank",v:5},{id:"lcrown",c:"hat",n:"Корона ведущего",t:"led",v:1},{id:"round",c:"gls",n:"Очки",t:"rank",v:1},{id:"sun",c:"gls",n:"Тёмные очки",t:"solved",v:2},{id:"star",c:"gls",n:"Очки-звёзды",t:"created",v:3},{id:"pink",c:"frm",n:"Розовая рамка",t:"solved",v:1},{id:"gold",c:"frm",n:"Золотая рамка",t:"rank",v:4},{id:"rain",c:"frm",n:"Радужная рамка",t:"solved",v:8}];
-var BD=[{id:"first",e:"🔍",n:"Первая находка"},{id:"clean",e:"🧠",n:"Без подсказок"},{id:"field",e:"📡",n:"Нашёл по GPS"},{id:"maker",e:"📷",n:"Создал дело"},{id:"lead",e:"👑",n:"Ведущий"}];
-function RN(x){var i=0,k;for(k=0;k<RK.length;k++)if(x>=RK[k][0])i=k;var n=RK[i+1]?RK[i+1][0]:null;return{n:RK[i][1],i:i,next:n,f:n?C((x-RK[i][0])/(n-RK[i][0]),0,1):1}}
-function CV(p,t){return t==="rank"?RN(p.xp).i:(p[t]||0)}
-function CT(i){return i.t==="rank"?"Ранг «"+RK[i.v][1]+"»":i.t==="solved"?"Найти "+i.v+" мест":i.t==="created"?"Создать "+i.v+" дел":"Провести "+i.v+" охот"}
-function OK(p,i){return CV(p,i.t)>=i.v}
-function GL2(p){var l=IT.filter(function(i){return!OK(p,i)});if(!l.length)return"Всё открыто! 🎉";l.sort(function(a,b){return CV(p,b.t)/b.v-CV(p,a.t)/a.v});return"Скоро: "+l[0].n+" · "+CT(l[0])}
-function IB(id){return IT.filter(function(x){return x.id===id})[0]}
-var LS="fotosled11",BX={1:120,2:180,3:260},FL=[["pixel","Мозаика"],["fog","Туман"],["invert","Негатив"]],PL=["Скейт-парк","Школьный двор","Магазин","Мост","Аллея","Гаражи","Стадион","Остановка"];
-var D=null;
-function TRAIN(){var t=Date.now(),au={name:"Тренировка",look:{g:"f",skin:1,hair:"bob",hc:0,eye:0,acc:AC[4],hat:"panama"}};
-function M(i,ty,sd,a,dc,df,f,s,h){return{id:"tr"+i,ans:a,decoys:dc,diff:df,filter:f,strength:s,mirror:false,gps:null,scene:{t:ty,s:sd},img:null,authorId:null,author:au,ts:t-h*36e5,train:true}}
-return[M(1,"yard",11,"Качели во дворе",["Скейт-парк","Школьный двор","Магазин"],1,"pixel",.62,2),M(2,"town",33,"Магазин у парка",["Остановка","Стадион","Гаражи"],2,"fog",.6,5)]}
-function SEED(){return{v:11,meId:"",players:[],activeId:"",leaderId:null,leaderMode:"random",inGame:[],missions:TRAIN(),prog:{},hunt:null,roll:0,room:"",set:{snd:true,vib:true,chat:"https://max.ru/",filter:"all",sort:"new",onboard:false,af:true}}}
-function LOAD(){try{var r=localStorage.getItem(LS);if(r){var s=JSON.parse(r);if(s&&s.v===11){D=s;D.set=Object.assign(SEED().set,s.set||{});D.players.forEach(function(p){p.look=Object.assign(DL(),p.look||{});if(p.look.g!=="m")p.look.g="f"});return}}}catch(e){}D=SEED();SAVE()}
-function SAVE(){try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}}
-function BY(id){return D.players.filter(function(p){return p.id===id})[0]}
-function ME(){return BY(D.activeId)||D.players[0]}
-function MY(){return BY(D.meId)||ME()}
-function LD(){return D.leaderId?BY(D.leaderId):null}
-function IN(){return D.players.filter(function(p){return D.inGame.indexOf(p.id)>=0})}
-function GP(m,p){return D.prog[m.id+":"+p.id]||null}
-function CN(m){return"№"+(H(m.id)%900+100)}
-function BX2(m){return BX[m.diff]||180}
-function AW(p,s){return'<span class="av">'+AV(p.look,s)+(D.leaderId===p.id?'<span class="crown">👑</span>':'')+'</span>'}
-function BG(p,id){if(p.badges.indexOf(id)<0){p.badges.push(id);var b=BD.filter(function(x){return x.id===id})[0];if(b)TS(b.e,"Значок: "+b.n)}}
-function SN(p){var o={};IT.forEach(function(i){if(OK(p,i))o[i.id]=1});return{r:RN(p.xp).i,o:o}}
-function CH(p,b){var d=0;if(RN(p.xp).i>b.r){S.p("crown");BU(innerWidth/2,innerHeight/2,130);TS("🎖","Новый ранг: "+RN(p.xp).n+"!")}IT.forEach(function(i){if(OK(p,i)&&!b.o[i.id]){setTimeout(function(){S.p("ok");TS("🎁","Открылось: "+i.n)},400+d);d+=400}})}
-function TS(ic,msg,ac){var b=Q("#toasts"),t=document.createElement("div");t.className="toast";t.innerHTML='<span style="font-size:18px">'+ic+'</span><span class="g2">'+msg+'</span>';if(ac){var x=document.createElement("button");x.className="ac";x.textContent=ac.l;x.onclick=function(){ac.f();t.remove()};t.appendChild(x)}b.appendChild(t);while(b.children.length>3)b.firstChild.remove();setTimeout(function(){t.remove()},ac?7000:3800)}
-function MD(h){Q("#mc").innerHTML=h;Q("#modal").classList.add("on")}
-function CM(){Q("#modal").classList.remove("on")}
-function MH(t){return'<div class="mt">'+t+'<button class="mx" data-act="closem">✕</button></div>'}
-/* ---------- NETWORK: MQTT over WebSocket ---------- */
-var TE=new TextEncoder(),TD=new TextDecoder();
-var NET={ws:null,st:"off",room:"",host:false,buf:new Uint8Array(0),br:0,t1:0,t2:0,t3:0,last:0,msg:""};
-var BRK=["wss://broker.emqx.io:8084/mqtt","wss://broker.hivemq.com:8884/mqtt","wss://test.mosquitto.org:8081/mqtt"];
-function mstr(s){var b=TE.encode(s),a=[b.length>>8,b.length&255],i;for(i=0;i<b.length;i++)a.push(b[i]);return a}
-function mlen(n){var a=[],d;do{d=n%128;n=Math.floor(n/128);if(n>0)d|=128;a.push(d)}while(n>0);return a}
-function mpk(t,body){var h=[t].concat(mlen(body.length)),u=new Uint8Array(h.length+body.length),i;u.set(h,0);for(i=0;i<body.length;i++)u[h.length+i]=body[i];return u}
-function ntopic(s){return"fs11/r/"+NET.room+"/"+s}
-function pub(suf,obj,ret){if(!NET.ws||NET.st!=="on")return;try{var pay=TE.encode(JSON.stringify(obj)),body=mstr(ntopic(suf)),i;for(i=0;i<pay.length;i++)body.push(pay[i]);NET.ws.send(mpk(ret?0x31:0x30,body))}catch(e){}}
-function prof(){var p=MY();return{id:p.id,name:p.name,look:p.look,xp:p.xp,solved:p.solved,created:p.created,led:p.led,best:p.best}}
-function nStop(){clearInterval(NET.t1);clearInterval(NET.t2);clearInterval(NET.t3);NET.t1=NET.t2=NET.t3=0;if(NET.ws){try{NET.ws.onclose=null;NET.ws.close()}catch(e){}}NET.ws=null;NET.buf=new Uint8Array(0)}
-function nJoin(code,asHost){code=String(code||"").replace(/\D/g,"");if(code.length!==4){TS("🔑","Код — 4 цифры");return}
-nStop();NET.room=code;NET.host=!!asHost;D.room=code;D.activeId=D.meId;
-if(asHost){D.players=[MY()];D.inGame=[D.meId];D.leaderId=null;D.hunt=null;D.missions=D.missions.filter(function(m){return m.train})}
-SAVE();nOpen()}
-function nOpen(){NET.st="conn";NET.msg="Подключаюсь…";nRender();
-var url=BRK[NET.br%BRK.length];var ws;
-try{ws=new WebSocket(url,"mqtt")}catch(e){NET.st="err";NET.msg="Нет соединения";nRender();return}
-NET.ws=ws;ws.binaryType="arraybuffer";
-ws.onopen=function(){var cid="fs"+D.meId+U();ws.send(mpk(0x10,mstr("MQTT").concat([4,2,0,60],mstr(cid))))};
-ws.onmessage=function(ev){nFeed(new Uint8Array(ev.data))};
-ws.onerror=function(){};
-ws.onclose=function(){if(!NET.room)return;NET.st="recon";NET.msg="Переподключаюсь…";nRender();clearInterval(NET.t1);clearInterval(NET.t2);clearInterval(NET.t3);NET.br++;setTimeout(function(){if(NET.room)nOpen()},1800)};
-}
-function nReady(){NET.st="on";NET.msg="В сети";NET.last=Date.now();
-var body=[0,1].concat(mstr(ntopic("#")),[0]);NET.ws.send(mpk(0x82,body));
-clearInterval(NET.t1);clearInterval(NET.t2);clearInterval(NET.t3);
-NET.t1=setInterval(function(){if(NET.ws&&NET.st==="on")try{NET.ws.send(new Uint8Array([192,0]))}catch(e){}},25000);
-NET.t2=setInterval(function(){if(NET.host){nPrune();nState()}else pub("a",{t:"hb",from:D.meId,p:prof()})},6000);
-NET.t3=setInterval(function(){if(!NET.host&&NET.last&&Date.now()-NET.last>26000){var on=D.players.filter(function(p){return p.id!==D.meId&&Date.now()-(p.seen||0)<40000});if(!on.length){NET.host=true;TS("👑","Хост пропал — ты теперь хост отряда");nState()}}},9000);
-if(NET.host){nState()}else{pub("a",{t:"join",from:D.meId,p:prof()})}
-nRender();TS("🌐","Отряд "+NET.room+" — подключение готово")}
-function nFeed(u){var b=new Uint8Array(NET.buf.length+u.length);b.set(NET.buf);b.set(u,NET.buf.length);NET.buf=b;
-for(;;){if(NET.buf.length<2)return;var i=1,m=1,l=0,d;
-for(;;){if(i>=NET.buf.length)return;d=NET.buf[i++];l+=(d&127)*m;m*=128;if(!(d&128))break}
-if(NET.buf.length<i+l)return;
-var t=NET.buf[0]>>4,body=NET.buf.subarray(i,i+l);NET.buf=NET.buf.slice(i+l);
-if(t===2)nReady();
-else if(t===3){var tl=(body[0]<<8)|body[1],tp=TD.decode(body.subarray(2,2+tl)),py=TD.decode(body.subarray(2+tl));if(py)nMsg(tp,py)}}}
-function nMsg(tp,txt){var k=tp.split("/")[3],o;try{o=JSON.parse(txt)}catch(e){return}
-if(k==="s"){if(NET.host&&o.host!==D.meId&&o.ts>(D.nts||0)){NET.host=false}if(!NET.host)nApply(o)}
-else if(k==="m"){nMission(o)}
-else if(k==="a"&&NET.host&&o.from!==D.meId)nAct(o)}
-function nApply(o){NET.last=Date.now();D.nts=o.ts;
-var mine=MY(),keep={};D.players.forEach(function(p){keep[p.id]=p});
-D.players=(o.pl||[]).map(function(p){var old=keep[p.id]||{};return{id:p.id,name:p.name,look:Object.assign(DL(),p.look),xp:p.xp||0,solved:p.solved||0,created:p.created||0,led:p.led||0,best:p.best||0,clean:old.clean||0,field:old.field||0,badges:old.badges||[],seen:Date.now()}});
-if(!BY(D.meId)&&mine)D.players.push(mine);
-D.activeId=D.meId;D.inGame=o.ing||D.players.map(function(p){return p.id});
-D.leaderId=o.leader;D.leaderMode=o.mode;D.hunt=o.hunt;D.roll=o.roll||0;
-var ids={};(o.ms||[]).forEach(function(x){ids[x]=1});
-D.missions=D.missions.filter(function(m){return m.train||ids[m.id]});
-SAVE();nRender();if(V==="hq")HQ();if(V==="rate")RT();if(V==="agent")AG();if(HH&&D.hunt)RS();
-if(D.roll&&Date.now()<D.roll)nRollAnim()}
-function nState(){if(!NET.host||NET.st!=="on")return;
-pub("s",{t:"s",host:D.meId,ts:Date.now(),pl:D.players.map(function(p){return{id:p.id,name:p.name,look:p.look,xp:p.xp,solved:p.solved,created:p.created,led:p.led,best:p.best}}),ing:D.inGame,leader:D.leaderId,mode:D.leaderMode,hunt:D.hunt,roll:D.roll,ms:D.missions.filter(function(m){return!m.train}).map(function(m){return m.id})},true)}
-function nAct(o){var p;
-if(o.t==="join"||o.t==="hb"){p=BY(o.p.id);if(!p){p={id:o.p.id,name:o.p.name,look:DL(),xp:0,solved:0,created:0,led:0,best:0,clean:0,field:0,badges:[],seen:0};D.players.push(p);D.inGame.push(p.id);S.p("join");TS("🎉",E(o.p.name)+" в отряде!")}
-p.name=o.p.name;p.look=Object.assign(DL(),o.p.look);p.xp=o.p.xp;p.solved=o.p.solved;p.created=o.p.created;p.led=o.p.led;p.best=o.p.best;p.seen=Date.now();SAVE();nState();nRender();if(V==="rate")RT()}
-else if(o.t==="leave"){D.players=D.players.filter(function(x){return x.id!==o.from});D.inGame=D.inGame.filter(function(x){return x!==o.from});if(D.leaderId===o.from)D.leaderId=null;SAVE();nState();nRender()}
-else if(o.t==="found"||o.t==="gave"){if(D.hunt){var s=D.hunt.seek.filter(function(x){return x.id===o.from})[0];if(s){s.st=o.t==="found"?"ok":"no";s.at=Date.now();SAVE();nState();if(HH)RS();if(o.t==="found"){S.p("win");TS("🎉",E((BY(o.from)||{}).name||"Игрок")+" нашёл место!")}}}
-else if(o.t==="mis"){nMission(o.m);nState()}}
-function nPrune(){var now=Date.now();D.players=D.players.filter(function(p){return p.id===D.meId||now-(p.seen||0)<120000});D.inGame=D.inGame.filter(function(i){return!!BY(i)});if(D.leaderId&&!BY(D.leaderId))D.leaderId=null}
-function nMission(m){if(!m||!m.id)return;if(D.missions.some(function(x){return x.id===m.id}))return;m.author=m.author||{name:"Друг",look:DL()};m.author.look=Object.assign(DL(),m.author.look);D.missions.unshift(m);SAVE();if(V==="hq")HQ();TS("📥","Новое дело "+CN(m)+" от "+E(m.author.name))}
-function nSync(){if(NET.st!=="on")return;if(NET.host)nState();else pub("a",{t:"hb",from:D.meId,p:prof()})}
-function nLeave(){if(NET.st==="on"){pub("a",{t:"leave",from:D.meId});if(NET.host)pub("s","",true)}nStop();NET.room="";NET.host=false;NET.st="off";D.room="";D.hunt=null;D.leaderId=null;SAVE();nRender();HQ()}
-function nRender(){var b=Q("#netBadge");if(b)b.textContent=NET.st==="on"?D.players.length:D.players.length;
-var box=Q("#net");if(!box)return;
-if(NET.st==="on"||NET.st==="conn"||NET.st==="recon"){
-var stc=NET.st==="on"?"var(--lm)":(NET.st==="conn"?"var(--sun)":"var(--or)");
-box.innerHTML='<div class="pan"><div class="netst"><span class="dot2" style="background:'+stc+';box-shadow:0 0 0 3px #FFF3E0"></span>'+NET.msg+' · '+(NET.host?"ты хост отряда":"подключён к хосту")+'</div><div class="code">'+NET.room+'</div><div class="row"><button class="btn bs sm g2" data-act="copycode">📋 Копировать код</button><button class="btn sm g2" data-act="invite">💬 Позвать в MAX</button><button class="btn bw sm" data-act="leave">Выйти</button></div><p class="note">Друзья открывают «Отряд» → «Войти по коду» → вводят <b>'+NET.room+'</b>. Все подключившиеся появятся в списке ниже у всех.</p></div>'}
-else{box.innerHTML='<div class="pan"><h2 class="sub" style="margin-top:0">🌐 СЕТЕВОЙ ОТРЯД</h2><p class="tn mu" style="margin-bottom:9px">Создай отряд и дай друзьям код — или войди в чужой. Все подключившиеся видны у всех, дела и находки прилетают мгновенно.</p><div class="row" style="flex-wrap:wrap"><button class="btn big g2" data-act="mkroom">🌐 Создать отряд</button></div><div class="row" style="margin-top:9px"><input type="text" id="joinI" class="g2" inputmode="numeric" maxlength="4" placeholder="Код из 4 цифр"><button class="btn bg" data-act="joinroom">🔑 Войти</button></div><div class="err2" id="netErr"></div></div>'}}
-function nRollAnim(){var reel=Q("#reel"),cur=Q("#rc");if(!reel||!cur)return;var pool=IN();if(pool.length<2)return;var i=0,last=0;
-function step(t){if(!Q("#rc"))return;if(Date.now()>=D.roll){var w=LD()||pool[0];Q("#rc").innerHTML=AV(w.look,92)+'<span class="nm">'+E(w.name)+'</span>';reel.insertAdjacentHTML("beforeend",'<div class="win"><span>ВЕДУЩИЙ!</span></div>');S.p("crown");BU(innerWidth/2,innerHeight/2,120);setTimeout(function(){var x=reel.querySelector(".win");if(x)x.remove()},1500);return}
-if(t-last>70){last=t;i=(i+1)%pool.length;cur.innerHTML=AV(pool[i].look,82)+'<span class="nm">'+E(pool[i].name)+'</span>';S.p("tap")}requestAnimationFrame(step)}requestAnimationFrame(step)}
-/* ---------- ART ---------- */
-function PAINT(t,sd,w,h){var c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d");x.scale(w/720,h/540);var RR=R(sd),i;
-var g=x.createLinearGradient(0,0,0,340);g.addColorStop(0,"#5EC8FA");g.addColorStop(1,"#BFE9FF");x.fillStyle=g;x.fillRect(0,0,720,540);
-x.fillStyle="#FFD84D";x.beginPath();x.arc(620,70,46,0,7);x.fill();
-x.fillStyle="#fff";for(i=0;i<3;i++){var cx=90+i*230+RR()*40,cy=60+RR()*50;x.beginPath();x.arc(cx,cy,26,0,7);x.arc(cx+30,cy+6,20,0,7);x.arc(cx-28,cy+8,18,0,7);x.fill()}
-x.fillStyle="#8FD96A";x.beginPath();x.moveTo(0,330);x.quadraticCurveTo(180,270,380,325);x.quadraticCurveTo(560,375,720,315);x.lineTo(720,540);x.lineTo(0,540);x.fill();
-x.fillStyle="#6FC24A";x.fillRect(0,400,720,140);
-function TR(tx,ty,s){x.fillStyle="#8A5A32";x.fillRect(tx-6*s,ty-40*s,12*s,44*s);x.fillStyle="#4E9E2E";x.beginPath();x.arc(tx,ty-56*s,30*s,0,7);x.fill();x.fillStyle="#5FB83C";x.beginPath();x.arc(tx-20*s,ty-44*s,20*s,0,7);x.arc(tx+20*s,ty-44*s,20*s,0,7);x.fill()}
-if(t==="yard"){x.fillStyle="#FF9A3D";x.beginPath();x.moveTo(150,400);x.lineTo(230,270);x.lineTo(262,270);x.lineTo(196,400);x.fill();x.fillStyle="#FFD84D";x.fillRect(226,262,40,14);
-x.strokeStyle="#A97BFF";x.lineWidth=12;x.beginPath();x.moveTo(360,400);x.lineTo(400,250);x.lineTo(440,400);x.moveTo(540,400);x.lineTo(580,250);x.lineTo(620,400);x.moveTo(400,250);x.lineTo(580,250);x.stroke();
-x.strokeStyle="#8A7256";x.lineWidth=4;[440,520].forEach(function(sx){x.beginPath();x.moveTo(sx,252);x.lineTo(sx,340);x.moveTo(sx+34,252);x.lineTo(sx+34,340);x.stroke();x.fillStyle="#FF5FA2";x.fillRect(sx-6,338,46,12)});TR(80,410,1.2);TR(690,405,1)}
-else{x.fillStyle="#FFF6E5";x.fillRect(180,220,340,180);x.fillStyle="#FF5FA2";x.fillRect(170,190,360,36);x.fillStyle="#fff";x.font="900 26px sans-serif";x.textAlign="center";x.fillText("МАГАЗИН",350,217);x.textAlign="left";
-for(i=0;i<10;i++){x.fillStyle=i%2?"#FFD84D":"#fff";x.fillRect(180+i*34,226,34,26)}
-x.fillStyle="#7FD4FF";x.fillRect(210,270,100,90);x.fillRect(390,270,100,90);x.fillStyle="#8A5A32";x.fillRect(325,290,50,110);TR(110,410,1.1);TR(620,405,1.2)}
-return c}
-var IC={},BC={};
-function LI(s){return new Promise(function(r,j){var m=new Image();m.onload=function(){r(m)};m.onerror=j;m.src=s})}
-function MB(m,w,h){w=w||720;h=h||540;var k=m.id+":"+w;if(BC[k])return Promise.resolve(BC[k]);if(m.scene){var c=PAINT(m.scene.t,m.scene.s,w,h);BC[k]=c;return Promise.resolve(c)}
-var p=IC[m.id]?Promise.resolve(IC[m.id]):LI(m.img).then(function(z){IC[m.id]=z;return z});
-return p.then(function(im){var c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d"),s=Math.max(w/im.width,h/im.height),dw=im.width*s,dh=im.height*s;x.drawImage(im,(w-dw)/2,(h-dh)/2,dw,dh);BC[k]=c;return c})}
-function EF(b,cf,s){var w=b.width,h=b.height,c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d"),src=b,i;
-if(cf.mirror){var m=document.createElement("canvas");m.width=w;m.height=h;var mx=m.getContext("2d");mx.translate(w,0);mx.scale(-1,1);mx.drawImage(b,0,0);src=m}
-if(cf.filter==="pixel"){var bl=Math.max(2,Math.round(2+s*(w/14))),tw=Math.max(1,Math.round(w/bl)),th=Math.max(1,Math.round(h/bl)),t=document.createElement("canvas");t.width=tw;t.height=th;t.getContext("2d").drawImage(src,0,0,tw,th);x.imageSmoothingEnabled=false;x.drawImage(t,0,0,tw,th,0,0,w,h)}
-else if(cf.filter==="fog"){x.drawImage(src,0,0);x.globalAlpha=.18;var o=2+s*14;for(i=0;i<8;i++){var a=i/8*6.283;x.drawImage(src,Math.cos(a)*o,Math.sin(a)*o)}x.globalAlpha=1;x.fillStyle="rgba(255,255,255,"+(s*.55)+")";x.fillRect(0,0,w,h)}
-else{x.drawImage(src,0,0);var d=x.getImageData(0,0,w,h),q=d.data;for(i=0;i<q.length;i+=4){q[i]=255-q[i];q[i+1]=255-q[i+1];q[i+2]=255-q[i+2]}x.putImageData(d,0,0)}
-return c}
-function CP(x,b,e,a,lp){x.clearRect(0,0,b.width,b.height);x.drawImage(b,0,0);x.globalAlpha=C(a,0,1);x.drawImage(e,0,0);x.globalAlpha=1;if(lp&&lp.on){x.save();x.beginPath();x.arc(lp.x,lp.y,lp.r,0,7);x.clip();x.drawImage(b,0,0);x.restore();x.strokeStyle="#FF5FA2";x.lineWidth=6;x.beginPath();x.arc(lp.x,lp.y,lp.r,0,7);x.stroke()}}
-var TC={};
-function TH(m){var k=m.id+m.filter+m.strength+m.mirror;if(TC[k])return Promise.resolve(TC[k]);return MB(m,168,126).then(function(b){var e=EF(b,m,m.strength),c=document.createElement("canvas");c.width=168;c.height=126;CP(c.getContext("2d"),b,e,C(m.strength*1.2,0,1));TC[k]=c.toDataURL("image/jpeg",.7);return TC[k]})}
-var FC=Q("#fx"),FX=FC.getContext("2d"),PS=[],RU=false;
-function SZ(){var d=Math.min(2,devicePixelRatio||1);FC.width=innerWidth*d;FC.height=innerHeight*d;FX.setTransform(d,0,0,d,0,0)}
-function BU(x,y,n){var K=["#FF5FA2","#FFD84D","#8BD450","#35B6F5","#A97BFF"],i;for(i=0;i<n;i++){var a=Math.random()*6.28,v=3+Math.random()*8;PS.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,r:4+Math.random()*6,c:K[i%5],ro:Math.random()*7,l:1})}if(!RU){RU=true;requestAnimationFrame(LP)}}
-function LP(){FX.clearRect(0,0,innerWidth,innerHeight);PS=PS.filter(function(p){return p.l>0});PS.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.ro+=.2;p.l-=.013;FX.save();FX.globalAlpha=Math.max(0,p.l);FX.translate(p.x,p.y);FX.rotate(p.ro);FX.fillStyle=p.c;FX.fillRect(-p.r/2,-p.r/2,p.r,p.r*.7);FX.restore()});if(PS.length)requestAnimationFrame(LP);else{RU=false;FX.clearRect(0,0,innerWidth,innerHeight)}}
-var TT={hq:"ДОСКА ДЕЛ",squad:"ОТРЯД И СЕТЬ",lab:"ФОТО-ЛАБОРАТОРИЯ",rate:"РЕЙТИНГ",agent:"МОЙ АГЕНТ",set:"НАСТРОЙКИ"},V="hq";
-function TOP(){var p=ME();if(!p)return;Q("#rAv").innerHTML=AV(p.look,32);Q("#rNm").textContent=p.name;Q("#rRk").textContent=RN(p.xp).n+(D.leaderId===p.id?" 👑":"");Q("#tAv").innerHTML=AV(p.look,30);Q("#tNm").textContent=p.name;Q("#tXp").textContent=p.xp+" XP · "+RN(p.xp).n;Q("#vt").textContent=TT[V];Q("#sndB").textContent=D.set.snd?"🔊":"🔇";Q("#sndB").classList.toggle("off",!D.set.snd);Q("#netBadge").textContent=D.players.length}
-function GO(v){V=v;S.p("tap");A(".v").forEach(function(s){s.classList.toggle("on",s.id==="v-"+v)});A(".nb").forEach(function(b){b.classList.toggle("on",b.dataset.v===v)});Q("#cont").scrollTop=0;TOP();DRAW()}
-function DRAW(){if(V==="hq")HQ();else if(V==="squad")SQ();else if(V==="rate")RT();else if(V==="agent")AG();else if(V==="set")ST();else if(V==="lab")LM()}
-function SO(m,p){if(m.authorId&&m.authorId===p.id)return"own";var x=GP(m,p);return x?x.state:"new"}
-var SL={new:["НОВОЕ","new"],open:["ИЩЕМ","open"],solved:["НАЙДЕНО","solved"],failed:["НЕ ВЫШЛО","failed"],own:["ТВОЁ","own"]};
-function HQ(){var p=ME(),r=RN(p.xp),L=LD(),n=IN().length,i,net=NET.st==="on";
-var s=[{o:net&&n>=2,t:"Собери отряд",s:net?"В сети: "+n:"создай или введи код",v:"squad"},{o:!!L,t:"Выбери ведущего",s:L?L.name:"случайно или сам",v:"squad"},{o:D.missions.some(function(m){return!m.train}),t:"Сними место",s:"нужно фото с улицы",v:"lab"}];
-var f=-1;for(i=0;i<3;i++)if(!s[i].o){f=i;break}
-Q("#guide").innerHTML=s.map(function(x,i2){return'<div class="gs '+(x.o?"done":(i2===f?"act":""))+'"><b>'+(x.o?"✓":(i2+1))+'</b><p>'+x.t+'<small>'+E(x.s)+'</small></p>'+(x.o?"":'<button class="btn sm" data-act="nav" data-v="'+x.v+'">→</button>')+'</div>'}).join("");
-Q("#leadB").innerHTML=L?AW(L,40)+'<div class="g2"><div class="t">ВЕДУЩИЙ: '+E(L.name)+'</div><div class="tn mu">Снимает место и играет в радар</div></div>'+(L.id===D.meId?'<button class="btn bo sm" data-act="hunt">📡 Пульт</button>':'')+'<button class="btn bw sm" data-act="nav" data-v="squad">Сменить</button>':'<span style="font-size:28px">👑</span><div class="g2"><div class="t">НУЖЕН ВЕДУЩИЙ!</div><div class="tn mu">Он будет снимать и шифровать места</div></div><button class="btn big" data-act="nav" data-v="squad">ВЫБРАТЬ →</button>';
-Q("#strip").innerHTML=AW(p,46)+'<div class="g2"><div class="nm">'+E(p.name)+'</div><div class="rk">'+r.n+' · '+p.xp+' XP'+(r.next?' · до «'+RN(r.next).n+'» '+(r.next-p.xp):'')+'</div><div class="xpb"><i style="width:'+(r.f*100)+'%"></i></div></div><div class="goal">🎁 '+E(GL2(p))+'</div>';
-var c={all:D.missions.length,new:0,open:0,solved:0};D.missions.forEach(function(m){var x=SO(m,p);if(c[x]!=null)c[x]++});
-Q("#chips").innerHTML=[["all","Все"],["new","Новые"],["open","Ищем"],["solved","Найдены"]].map(function(f2){return'<button class="chip'+(D.set.filter===f2[0]?" on":"")+'" data-act="filter" data-f="'+f2[0]+'">'+f2[1]+'<i>'+c[f2[0]]+'</i></button>'}).join("");
-Q("#sort").value=D.set.sort;BOARD()}
-function BOARD(){var p=ME(),q=N(Q("#q").value);
-var l=D.missions.filter(function(m){var s=SO(m,p);if(D.set.filter!=="all"&&s!==D.set.filter&&!(D.set.filter==="new"&&s==="own"))return false;var x=GP(m,p);if(q&&N(m.author.name+CN(m)+(x&&x.state==="solved"?m.ans:"")).indexOf(q)<0)return false;return true});
-l.sort(function(a,b){return D.set.sort==="reward"?BX2(b)-BX2(a):(D.set.sort==="diff"?a.diff-b.diff:b.ts-a.ts)});
-var B=Q("#board");if(!l.length){B.innerHTML='<div class="empty"><div style="font-size:44px">🗺️</div><p style="margin:10px 0 14px">Пока пусто! Создай первое дело.</p><button class="btn" data-act="nav" data-v="lab">📸 Создать</button></div>';return}
-B.innerHTML=l.map(function(m){var s=SO(m,p),t=SL[s],x=GP(m,p),pt=x&&x.state==="open"?Math.max(20,Math.round(BX2(m)*(x.retry||1))-x.spent):BX2(m);
-return'<article class="case" data-act="case" data-id="'+m.id+'"><div class="th" data-th="'+m.id+'">🔒</div><div class="g2"><div class="no">'+CN(m)+' · '+E(m.author.name)+'</div><div class="ttl">'+(x&&x.state==="solved"?E(m.ans):(s==="own"?"Твоя шифровка":"Секретное место"))+'</div><div class="meta"><span class="tag">'+"⭐".repeat(m.diff)+'</span>'+(m.train?'<span class="tag">ТРЕНИРОВКА</span>':'')+(m.gps?'<span class="tag">📍GPS</span>':'')+'<span class="tag rw">⚡'+pt+'</span></div></div><span class="st '+t[1]+'">'+t[0]+'</span>'+(m.authorId===D.meId?'<button class="del" data-act="delcase" data-id="'+m.id+'">🗑</button>':'')+'</article>'}).join("");
-l.forEach(function(m){TH(m).then(function(u){var e=B.querySelector('[data-th="'+m.id+'"]');if(e)e.innerHTML='<img src="'+u+'">'}).catch(function(){})})}
-function SQ(){nRender();var L=LD(),ip=IN(),host=NET.host||NET.st!=="on";
-Q("#sqL").innerHTML='<div class="pan"><h2 class="sub" style="margin-top:0">В ОТРЯДЕ · '+D.players.length+'</h2>'+D.players.map(function(p){var on=NET.st!=="on"||p.id===D.meId||Date.now()-(p.seen||0)<40000,ing=D.inGame.indexOf(p.id)>=0;
-return'<div class="pin2'+(ing?" in":"")+(D.leaderId===p.id?" ld":"")+(on?"":" off")+'">'+(host?'<button class="tick'+(ing?" on":"")+'" data-act="tick" data-id="'+p.id+'">'+(ing?"✓":"")+'</button>':'<span class="tick'+(ing?" on":"")+'">'+(ing?"✓":"")+'</span>')+AW(p,36)+'<div class="g2"><div class="nm">'+E(p.name)+(p.id===D.meId?' <span class="tn mu">(ты)</span>':'')+'</div><div class="s">'+RN(p.xp).n+' · '+p.xp+' XP</div></div><span class="dot2'+(on?"":" off")+'"></span>'+(host&&D.leaderMode==="manual"&&ing?'<button class="btn bo sm" data-act="setlead" data-id="'+p.id+'">👑</button>':'')+'</div>'}).join("")+
-(host?'<div class="row" style="margin-top:8px"><button class="btn bw sm g2" data-act="allin">Все в игре</button><button class="btn bw sm g2" data-act="addlocal">＋ Рядом</button></div>':'')+(ip.length<2?'<p class="note" style="color:#E05555">Нужно минимум 2 игрока в игре.</p>':'')+'</div>';
-var rp=L||ip[0]||D.players[0];
-Q("#sqR").innerHTML='<div class="pan"><h2 class="sub" style="margin-top:0">ВЕДУЩИЙ</h2>'+(host?'<div class="seg" style="margin-bottom:10px"><button data-act="lmode" data-m="random"'+(D.leaderMode==="random"?' class="on"':'')+'>🎲 Случайно</button><button data-act="lmode" data-m="manual"'+(D.leaderMode==="manual"?' class="on"':'')+'>✋ Сам</button></div>':'')+'<div class="reel" id="reel"><div class="cur" id="rc">'+AV(rp.look,82)+'<span class="nm">'+E(rp.name)+'</span></div></div>'+(host&&D.leaderMode==="random"?'<button class="btn big w" data-act="roll"'+(ip.length<2?" disabled":"")+'>🎲 КРУТИТЬ!</button>':(host?'<p class="note" style="text-align:center">Нажми 👑 у игрока слева</p>':'<p class="note" style="text-align:center">Ведущего выбирает хост отряда</p>'))+(L?'<div class="ldc" style="margin-top:10px">'+AW(L,44)+'<div class="g2"><div style="font-size:14px;font-weight:900;color:var(--or2)">'+E(L.name)+'</div><div class="tn mu">Провёл охот: '+L.led+'</div></div></div>'+(L.id===D.meId?'<button class="btn bg big w" data-act="hunt">📡 ПУЛЬТ ВЕДУЩЕГО</button>':'<p class="note" style="text-align:center">Ты — искатель. Открой дело на доске и беги искать!</p>')+(host?'<button class="btn bw sm w" data-act="unlead" style="margin-top:6px">↺ Сменить</button>':''):'<p class="note" style="margin-top:9px">Ведущий снимает место, а пока другие ищут — играет в радар!</p>')+'</div>';
-if(D.roll&&Date.now()<D.roll)nRollAnim()}
-function SETL(id){var p=BY(id);if(!p)return;D.leaderId=id;if(D.inGame.indexOf(id)<0)D.inGame.push(id);SAVE();S.p("crown");VB([30,50,30]);BU(innerWidth/2,innerHeight/2,120);nSync();SQ();TOP();TS("👑","Ведущий: "+E(p.name))}
-function ROLL(){var pool=IN();if(pool.length<2)return;var win=pool[Math.floor(Math.random()*pool.length)];D.roll=Date.now()+2300;D.leaderId=win.id;SAVE();nSync();nRollAnim();setTimeout(function(){S.p("crown");TS("👑","Ведущий: "+E(win.name));SQ();TOP()},2350)}
-var LB={scene:{t:"yard",s:1234},img:null,filter:"pixel",strength:.62,mirror:false,diff:2,pin:null,b:null};
-function LCH(){Q("#fch").innerHTML=FL.map(function(f){return'<button class="fxc'+(LB.filter===f[0]?" on":"")+'" data-act="fx" data-f="'+f[0]+'">'+f[1]+'</button>'}).join("")}
-function LDR(){if(LB.b)CP(Q("#lc").getContext("2d"),LB.b,EF(LB.b,LB,LB.strength),C(LB.strength*1.2,0,1))}
-function LBA(){MB({id:"lab"+(LB.img?H(LB.img.slice(-30)):LB.scene.s),scene:LB.img?null:LB.scene,img:LB.img},480,360).then(function(b){LB.b=b;LDR()})}
-function LM(){var p=ME();Q("#auth").innerHTML=AV(p.look,22)+"Автор: "+E(p.name);Q("#note").textContent=LB.img?"📸 Отлично! Отряд увидит только шифр.":"🎞 Это тренировочная картинка. Сними настоящее место на улице!";Q("#clrB").style.display=LB.img?"inline-flex":"none";Q("#pinB").textContent=LB.pin?"✕ Убрать пин":"📍 Пин точки";Q("#pinI").style.display=LB.pin?"inline-flex":"none";if(LB.pin)Q("#pinI").textContent="±"+LB.pin.r+" м";Q("#radR").disabled=!LB.pin;Q("#rwV").textContent=BX[LB.diff]+" XP";LCH()}
-function PUB(){var a=Q("#ansI").value.trim();if(a.length<3){TS("✏️","Напиши, что это за место!");return}
-var dc=A(".dec").map(function(i){return i.value.trim()}).filter(function(v){return v&&N(v)!==N(a)}).slice(0,3),p=ME(),b=SN(p);
-var m={id:U(),ans:a,decoys:dc,diff:LB.diff,filter:LB.filter,strength:LB.strength,mirror:LB.mirror,gps:LB.pin?Object.assign({},LB.pin):null,scene:LB.img?null:Object.assign({},LB.scene),img:LB.img,authorId:p.id,author:{name:p.name,look:Object.assign({},p.look)},ts:Date.now()};
-D.missions.unshift(m);p.created++;if(!D.leaderId)D.leaderId=p.id;BG(p,"maker");CH(p,b);SAVE();S.p("ok");TOP();window.MM=m;
-if(NET.st==="on"){pub("m/"+m.id,m,true);if(!NET.host)pub("a",{t:"mis",from:D.meId,m:m});nSync()}
-MD(MH("🚀 Дело готово!")+'<p class="tn mu" style="margin-bottom:10px">'+(NET.st==="on"?"Дело уже разослано всему отряду — оно появится у всех на доске.":"Отправь файл друзьям или создай сетевой отряд.")+'</p><div style="display:flex;flex-direction:column;gap:7px">'+(NET.st==="on"?'':'<button class="btn w" data-act="shfile">⬇️ Скачать файл дела</button>')+'<button class="btn bg w" data-act="shhunt">📡 Начать охоту</button><button class="btn bs w" data-act="chat">💬 Открыть чат</button></div><div class="mbs"><button class="btn bw" data-act="closem">Готово</button></div>');HQ()}
-function UNP(t){var o;try{o=JSON.parse(t)}catch(e){throw new Error("Файл повреждён")}if(!o||o.t!=="fotosled"||!o.m)throw new Error("Это не файл дела");var m=o.m;if(!m.img&&!m.scene)throw new Error("Нет фото");m.decoys=(m.decoys||[]).slice(0,3);m.diff=C(+m.diff||2,1,3);m.strength=C(+m.strength||.6,.1,.95);if(!FL.some(function(f){return f[0]===m.filter}))m.filter="pixel";m.author=m.author||{name:"Друг",look:DL()};m.author.look=Object.assign(DL(),m.author.look);if(D.missions.some(function(x){return x.id===m.id}))m.id=U();m.authorId=null;m.ts=Date.now();return m}
-function RT(){var s=D.players.slice().sort(function(a,b){return b.xp-a.xp});
-Q("#pod").innerHTML=[s[1],s[0],s[2]].filter(Boolean).map(function(p){var i=s.indexOf(p)+1;return'<div class="pod p'+i+'"><span style="font-size:20px">'+["🥇","🥈","🥉"][i-1]+'</span>'+AW(p,i===1?72:56)+'<span class="nm">'+E(p.name)+'</span><span class="xp">'+p.xp+' XP</span></div>'}).join("");
-Q("#rb").innerHTML=s.map(function(p,i){return'<tr class="'+(p.id===D.meId?"me":"")+'"><td>'+(i<3?["🥇","🥈","🥉"][i]:(i+1))+'</td><td><div class="who">'+AW(p,34)+'<b>'+E(p.name)+'</b></div></td><td class="xpn">'+p.xp+'</td><td class="num">'+p.solved+'</td><td class="num">'+p.created+'</td><td class="num">'+p.led+'</td><td class="num">'+p.best+'</td></tr>'}).join("")}
-function EP(id){var p=id?BY(id):null,l=p?Object.assign({},p.look):DL();window.EP2={l:l,id:id||""};
-MD(MH(p?"Профиль агента":"Игрок рядом")+'<input type="text" id="pnI" maxlength="16" placeholder="Имя" value="'+(p?E(p.name):"")+'"><div style="display:grid;place-items:center;margin:10px 0" id="pAv">'+AV(l,96)+'</div><h2 class="sub">Пол</h2><div class="seg">'+GN.map(function(g){return'<button data-act="epg" data-g="'+g[0]+'"'+(l.g===g[0]?' class="on"':'')+'>'+g[1]+'</button>'}).join("")+'</div><h2 class="sub">Кожа</h2><div class="cg">'+SK.map(function(c,i){return'<button class="co'+(l.skin===i?" on":"")+'" data-act="eps" data-s="'+i+'" style="background:'+c+'"></button>'}).join("")+'</div>'+(p&&p.id!==D.meId&&D.players.length>1?'<button class="btn bw sm w" data-act="delp" data-id="'+id+'" style="margin-top:10px">🗑 Убрать из отряда</button>':'')+'<div class="mbs"><button class="btn bw" data-act="closem">Отмена</button><button class="btn" data-act="savep">Сохранить</button></div>')}
-function EPR(){var e=window.EP2;Q("#pAv").innerHTML=AV(e.l,96);A("#mc .seg button").forEach(function(b){b.classList.toggle("on",b.dataset.g===e.l.g)});A("#mc .co").forEach(function(b){b.classList.toggle("on",+b.dataset.s===e.l.skin)})}
-function LW(L,k,v){var o=Object.assign({},L);o[k]=v;return o}
-function AG(){var p=ME(),r=RN(p.xp),L=p.look,sz=innerHeight<440?104:146;
-Q("#agL").innerHTML='<div class="ped">'+AV(L,sz)+'</div><div class="nm">'+E(p.name)+'<button class="mb" data-act="editp" data-id="'+p.id+'">✏️</button></div><div><span class="rc">'+r.n+(D.leaderId===p.id?" 👑":"")+'</span></div><div class="xpb" style="margin-top:7px"><i style="width:'+(r.f*100)+'%"></i></div><div class="tn mu" style="margin-top:4px">'+p.xp+' XP'+(r.next?' · до «'+RN(r.next).n+'» '+(r.next-p.xp):'')+'</div><div class="goal" style="margin:7px auto 0">'+E(GL2(p))+'</div><div class="sg"><div class="stt"><b>'+p.solved+'</b><span>НАШЁЛ</span></div><div class="stt"><b>'+p.created+'</b><span>СОЗДАЛ</span></div><div class="stt"><b>'+p.led+'</b><span>ВЁЛ</span></div></div><div class="bdg">'+BD.map(function(b){return'<div class="bg3'+(p.badges.indexOf(b.id)>=0?" got":"")+'" title="'+b.n+'">'+b.e+'</div>'}).join("")+'</div>';
-function sw(k,arr,cur){return'<div class="hs6">'+arr.map(function(c,i){return'<button class="co s2'+(cur===i?" on":"")+'" data-act="look" data-k="'+k+'" data-v="'+i+'" style="background:'+c+'"></button>'}).join("")+'</div>'}
-var h='<div class="ctlrow"><h4>Пол</h4><div class="seg" style="flex:1;min-width:150px">'+GN.map(function(g){return'<button data-act="look" data-k="g" data-v="'+g[0]+'"'+(L.g===g[0]?' class="on"':'')+'>'+g[1]+'</button>'}).join("")+'</div></div>';
-h+='<div class="ctlrow"><h4>Кожа</h4>'+sw("skin",SK,L.skin)+'</div><div class="ctlrow"><h4>Глаза</h4>'+sw("eye",EC,L.eye)+'</div>';
-h+='<div class="ctlrow"><h4>Причёска</h4><div class="hs6">'+HR.map(function(x){return'<button class="hbtn'+(L.hair===x[0]?" on":"")+'" data-act="look" data-k="hair" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div></div>';
-h+='<div class="ctlrow"><h4>Волосы</h4>'+sw("hc",HC,L.hc)+'</div>';
-h+='<div class="ctlrow"><h4>Костюм</h4><div class="hs6">'+AC.map(function(c){return'<button class="co s2'+(L.acc===c?" on":"")+'" data-act="look" data-k="acc" data-v="'+c+'" style="background:'+c+'"></button>'}).join("")+'</div></div>';
-Q("#agC").innerHTML='<div class="row" style="margin-bottom:8px"><h2 class="sub" style="margin:0;flex:1">ВНЕШНОСТЬ</h2><button class="btn bs sm" data-act="randlook">🎲 Образ</button><button class="btn bw sm" data-act="resetlook">↺ Сброс</button></div>'+h;
-var grp=[["hat","🎩 Шляпы","Без шляпы"],["gls","🕶 Очки","Без очков"],["frm","🖼 Рамки","Без рамки"]];
-Q("#agW").innerHTML=grp.map(function(g){var its=IT.filter(function(i){return i.c===g[0]});
-return'<div class="wgrp"><h5>'+g[1]+'</h5><div class="wgrid"><button class="wc'+(L[g[0]]==="none"?" on":"")+'" data-act="look" data-k="'+g[0]+'" data-v="none">'+AV(LW(L,g[0],"none"),50)+'<span class="wn">'+g[2]+'</span></button>'+its.map(function(i){var u=OK(p,i);return'<button class="wc'+(L[g[0]]===i.id?" on":"")+(u?"":" lk")+'" data-act="look" data-k="'+g[0]+'" data-v="'+i.id+'">'+AV(LW(L,g[0],i.id),50)+(u?"":'<span class="li2">🔒</span>')+'<span class="wn">'+i.n+'</span>'+(u?"":'<span class="cd">'+CT(i)+'</span>')+'</button>'}).join("")+'</div></div>'}).join("")}
-function ST(){Q("#chatI").value=D.set.chat||"";Q("#cst").textContent=D.set.chat?"Адрес: "+D.set.chat:"Адрес не задан";Q("#sndT").checked=D.set.snd;Q("#vibT").checked=D.set.vib;Q("#afT").checked=D.set.af;Q("#netInfo").textContent=NET.st==="on"?("Отряд "+NET.room+" · "+(NET.host?"ты хост":"подключён")+" · игроков: "+D.players.length):"Не подключён. Создай отряд или войди по коду.";Q("#build").textContent="Сборка 11 · сетевой отряд MQTT"}
-var HH=null;
-function NH(mid){D.hunt={mid:mid,at:Date.now(),en:0,hints:0,score:0,seek:IN().filter(function(p){return p.id!==D.leaderId}).map(function(p){return{id:p.id,st:"go",at:0}})};SAVE();nSync()}
-function HUNT(){var L=LD();if(!L){TS("👑","Сначала выбери ведущего!");GO("squad");return}if(L.id!==D.meId){TS("👑","Пульт только у ведущего");return}if(!D.hunt){PICK();return}SH2()}
-function PICK(){if(!D.missions.length){TS("📁","Сначала создай дело");GO("lab");return}
-MD(MH("📡 Выбери дело")+D.missions.slice(0,8).map(function(m){return'<button class="pk" data-act="hstart" data-id="'+m.id+'"><span class="av">'+AV(m.author.look,36)+'</span><div class="g2"><div class="nm">'+CN(m)+' · '+E(m.author.name)+'</div><div class="rk">'+"⭐".repeat(m.diff)+' · '+(m.gps?"GPS":"викторина")+'</div></div></button>'}).join("")+'<div class="mbs"><button class="btn bw" data-act="closem">Отмена</button></div>')}
-function SH2(){if(!LD()||!D.hunt)return;HH={run:false,pause:false,over:0,t:0,last:0,sp:0,score:0,combo:0,lives:3,wave:1,diff:1,bl:[],pt:[],sw:0,raf:0,tk:0};Q("#hunt").classList.add("on");RH();DR();HH.tk=setInterval(function(){var t=Q("#hTm");if(t&&D.hunt)t.textContent=T(Date.now()-D.hunt.at)},1000)}
-function CH2(){if(!HH)return;cancelAnimationFrame(HH.raf);clearInterval(HH.tk);HH=null;Q("#hunt").classList.remove("on");Q("#hunt").innerHTML="";SAVE();TOP();DRAW()}
-function RH(){var L=LD(),u=D.hunt,m=D.missions.filter(function(x){return x.id===u.mid})[0];if(!m){CH2();return}
-Q("#hunt").innerHTML='<div class="pl"><div class="ph"><button class="bk" data-act="hclose">←</button><div class="cno">ПУЛЬТ ВЕДУЩЕГО<small>'+E(L.name)+' · дело '+CN(m)+'</small></div><div class="pw"><div class="tmr"><span>ОХОТА</span><b id="hTm">'+T(Date.now()-u.at)+'</b></div><div class="pot"><span>ЭНЕРГИЯ</span><b id="hEn">'+u.en+'</b></div></div></div><div class="rhud"><div class="rh"><span>ОЧКИ</span><b id="rSc">0</b></div><div class="rh"><span>КОМБО</span><b id="rCb">×1</b></div><div class="rh"><span>ЖИЗНИ</span><b id="rLv">3</b></div><div class="rh"><span>ВОЛНА</span><b id="rWv">1</b></div><div class="rh"><span>ВРЕМЯ</span><b id="rTm">90</b></div></div><div class="rbox"><canvas id="rcv" width="400" height="400"></canvas><div class="rov" id="rOv"><div><h3>📡 РАДАР</h3><p>Лови зелёные огоньки — это подсказки для отряда!<br>Красные не трогай!</p><button class="btn bg big" data-act="rstart">▶ ПОЕХАЛИ!</button></div></div></div></div><div class="pr"><div class="row" style="margin-bottom:8px"><button class="btn bg sm g2" data-act="rstart">▶ Старт</button><button class="btn bs sm g2" data-act="rpause">⏸ Пауза</button><button class="btn bw sm g2" data-act="rreset">↺ Заново</button></div><h2 class="sub" style="margin-top:4px">Скорость</h2><div class="seg" id="rD"><button data-act="rdiff" data-d="0">Спокойно</button><button data-act="rdiff" data-d="1" class="on">Обычно</button><button data-act="rdiff" data-d="2">Быстро</button></div><h2 class="sub">Подсказки</h2><div class="row" style="margin-bottom:8px"><button class="btn bo sm g2" data-act="hint">📡 Дать подсказку (10⚡)</button><span class="chip">дано: <i id="hH">'+u.hints+'</i></span></div><h2 class="sub">Искатели</h2><div id="hS"></div><button class="btn w" data-act="hend" style="margin-top:8px">🏁 Завершить охоту</button><button class="btn bs sm w" data-act="chat" style="margin-top:6px">💬 Чат отряда</button></div>';RS()}
-function RS(){var b=Q("#hS"),u=D.hunt;if(!b||!u)return;b.innerHTML=u.seek.map(function(s){var p=BY(s.id);if(!p)return"";var l=s.st==="ok"?"Нашёл! ✓ "+T(s.at-u.at):(s.st==="no"?"Сдался":"Ищет…");return'<div class="seek'+(s.st==="ok"?" found":"")+'">'+AV(p.look,32)+'<div class="g2"><div class="nm">'+E(p.name)+'</div><div class="s">'+l+'</div></div><button class="sbtn'+(s.st==="ok"?" on":"")+'" data-act="seek" data-id="'+s.id+'" data-s="ok">✓</button><button class="sbtn'+(s.st==="no"?" on":"")+'" data-act="seek" data-id="'+s.id+'" data-s="no">✕</button></div>'}).join("")||'<p class="note">Никого нет</p>';var e=Q("#hEn");if(e)e.textContent=u.en;var hh=Q("#hH");if(hh)hh.textContent=u.hints}
-function RST(){if(!HH||HH.run)return;HH.run=true;HH.pause=false;HH.over=0;HH.last=performance.now();Q("#rOv").style.display="none";S.p("ok");HH.raf=requestAnimationFrame(RL)}
-function RPA(){if(!HH||!HH.run)return;HH.pause=!HH.pause;var o=Q("#rOv");if(HH.pause){o.style.display="grid";o.className="rov";o.innerHTML='<div><h3>⏸ ПАУЗА</h3><button class="btn bg" data-act="rpause">▶ Дальше</button></div>'}else{o.style.display="none";HH.last=performance.now()}}
-function RRE(){if(!HH)return;HH.run=false;HH.over=0;HH.t=0;HH.score=0;HH.combo=0;HH.lives=3;HH.wave=1;HH.bl=[];HH.pt=[];HUD();var o=Q("#rOv");o.style.display="grid";o.className="rov";o.innerHTML='<div><h3>📡 РАДАР</h3><p>Лови зелёные огоньки!</p><button class="btn bg big" data-act="rstart">▶ ПОЕХАЛИ!</button></div>';DR()}
-function HUD(){if(!HH)return;Q("#rSc").textContent=HH.score;Q("#rCb").textContent="×"+(1+Math.floor(HH.combo/3));Q("#rLv").textContent=HH.lives;Q("#rWv").textContent=HH.wave;Q("#rTm").textContent=Math.max(0,Math.ceil(90-HH.t))}
-function RL(t){if(!HH)return;HH.raf=requestAnimationFrame(RL);var dt=Math.min(.05,(t-HH.last)/1000);HH.last=t;
-if(HH.run&&!HH.pause&&!HH.over){HH.t+=dt;HH.sw+=dt*1.6;HH.sp-=dt;var bs=[1.5,1.05,.72][HH.diff],lf=[4.2,3.2,2.4][HH.diff],dc=[.14,.24,.34][HH.diff];
-if(HH.sp<=0){HH.sp=bs*Math.pow(.92,HH.wave-1)*(.75+Math.random()*.5);var a=Math.random()*6.283,r=.18+Math.random()*.72;HH.bl.push({x:.5+Math.cos(a)*r*.44,y:.5+Math.sin(a)*r*.44,l:lf*Math.pow(.96,HH.wave-1),m:lf,bad:Math.random()<dc})}
-HH.bl.forEach(function(b){b.l-=dt});var lost=HH.bl.filter(function(b){return b.l<=0&&!b.bad}).length;if(lost){HH.lives-=lost;HH.combo=0;S.p("no");VB(60)}
-HH.bl=HH.bl.filter(function(b){return b.l>0});var nw=1+Math.floor(HH.t/20);if(nw>HH.wave){HH.wave=nw;S.p("ok")}
-HH.pt.forEach(function(p){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt*1.6});HH.pt=HH.pt.filter(function(p){return p.l>0});
-if(HH.lives<=0)RE(false);else if(HH.t>=90)RE(true);HUD()}DR()}
-function RE(win){HH.run=false;HH.over=1;HH.score+=win?120:0;var g=Math.floor(HH.score/12);D.hunt.score+=HH.score;D.hunt.en+=g;SAVE();nSync();S.p(win?"win":"no");if(win)BU(innerWidth*.35,innerHeight*.5,120);
-var o=Q("#rOv");o.style.display="grid";o.className="rov"+(win?"":" lose");o.innerHTML='<div><h3>'+(win?"🎉 СВЯЗЬ ЕСТЬ!":"😵 СВЯЗЬ ПРОПАЛА")+'</h3><p>Очки: '+HH.score+' · +'+g+'⚡ энергии</p><button class="btn bg big" data-act="ragain">↺ ЕЩЁ РАЗ</button></div>';Q("#hEn").textContent=D.hunt.en;HUD()}
-function RTAP(e){if(!HH||!HH.run||HH.pause||HH.over)return;var r=e.currentTarget.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,hit=null,bi=-1;
-HH.bl.forEach(function(b,i){var d=Math.hypot(b.x-x,b.y-y);if(d<.08&&(!hit||d<Math.hypot(hit.x-x,hit.y-y))){hit=b;bi=i}});
-if(!hit){HH.combo=0;HUD();return}HH.bl.splice(bi,1);
-if(hit.bad){HH.lives--;HH.combo=0;S.p("no");VB(70);if(HH.lives<=0)RE(false)}
-else{HH.combo++;HH.score+=10*(1+Math.floor(HH.combo/3));D.hunt.en++;S.p("hit");VB(12);Q("#hEn").textContent=D.hunt.en;for(var j=0;j<10;j++)HH.pt.push({x:hit.x,y:hit.y,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,l:1,c:"#8BD450"})}HUD()}
-function DR(){var c=Q("#rcv");if(!c||!HH)return;var x=c.getContext("2d"),s=400,K=200,R2=186,i;
-x.clearRect(0,0,s,s);var g=x.createRadialGradient(K,K,10,K,K,R2);g.addColorStop(0,"#DFF7C9");g.addColorStop(1,"#8FD96A");x.fillStyle=g;x.beginPath();x.arc(K,K,R2,0,7);x.fill();
-x.strokeStyle="rgba(255,255,255,.6)";x.lineWidth=3;for(i=1;i<=4;i++){x.beginPath();x.arc(K,K,R2*i/4,0,7);x.stroke()}
-x.beginPath();x.moveTo(K-R2,K);x.lineTo(K+R2,K);x.moveTo(K,K-R2);x.lineTo(K,K+R2);x.stroke();
-x.save();x.translate(K,K);x.rotate(HH.sw);var sg=x.createLinearGradient(0,0,R2,0);sg.addColorStop(0,"rgba(255,255,255,.75)");sg.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=sg;x.beginPath();x.moveTo(0,0);x.arc(0,0,R2,-.5,0);x.closePath();x.fill();x.restore();
-HH.bl.forEach(function(b){var px=b.x*s,py=b.y*s,k=C(b.l/b.m,0,1),col=b.bad?"#FF5FA2":"#3E9B4F";
-x.globalAlpha=.3;x.fillStyle=col;x.beginPath();x.arc(px,py,18,0,7);x.fill();x.globalAlpha=1;x.fillStyle=col;x.beginPath();x.arc(px,py,9,0,7);x.fill();
-x.strokeStyle="#fff";x.lineWidth=3;x.beginPath();x.arc(px,py,14,-1.57,-1.57+6.283*k);x.stroke();
-if(b.bad){x.strokeStyle="#fff";x.lineWidth=3;x.beginPath();x.moveTo(px-4,py-4);x.lineTo(px+4,py+4);x.moveTo(px+4,py-4);x.lineTo(px-4,py+4);x.stroke()}});
-HH.pt.forEach(function(p){x.globalAlpha=C(p.l,0,1);x.fillStyle=p.c;x.fillRect(p.x*s-3,p.y*s-3,6,6)});x.globalAlpha=1}
-function HEND(){var u=D.hunt,L=LD(),f=u.seek.filter(function(s){return s.st==="ok"}).length,xp=Math.min(240,Math.floor(u.score/8)+f*30+u.hints*5+20);window.XP=xp;
-MD(MH("🏁 Охота окончена!")+'<div class="brk"><div class="bl"><span>Очки радара</span><b>'+u.score+'</b></div><div class="bl pos"><span>Нашли место</span><b>'+f+' × 30</b></div><div class="bl pos"><span>Подсказки</span><b>'+u.hints+' × 5</b></div><div class="bl tot"><span>ВЕДУЩЕМУ</span><b>+'+xp+' XP</b></div></div><div class="mbs"><button class="btn" data-act="claim">🎁 Забрать!</button></div>')}
-var PP=null,DM=[1,.62,.38,.15],DC=[25,35,45];
-function OC(id){var m=D.missions.filter(function(x){return x.id===id})[0];if(!m)return;
-if(m.authorId&&m.authorId===D.meId){TS("🙈","Своё дело искать нельзя — ты его снял!");return}
-SC(m,ME())}
-function SC(m,p){var x=GP(m,p);if(!x){x={state:"open",step:0,loupe:false,let:[],att:3,spent:0,opts:m.decoys.length?SH([m.ans].concat(m.decoys),R(H(m.id+p.id))):[],at:Date.now(),el:0,proof:null,retry:1,res:null};D.prog[m.id+":"+p.id]=x;SAVE()}
-if(x.state==="open"&&!x.at)x.at=Date.now();
-PP={m:m,p:p,x:x,b:null,e:null,lp:{on:false,x:360,y:270,r:70},lock:false,tm:0,pg:0};Q("#play").classList.add("on");if(x.state==="open")RP();else RA()}
-function CC(){if(!PP)return;if(PP.x.state==="open"&&PP.x.at){PP.x.el+=Date.now()-PP.x.at;PP.x.at=0}clearInterval(PP.tm);clearInterval(PP.pg);SAVE();PP=null;Q("#play").classList.remove("on");Q("#play").innerHTML="";TOP();DRAW()}
-function EF2(){return PP.m.strength*DM[PP.x.step]}
-function POT(){return Math.max(20,Math.round(BX2(PP.m)*(PP.x.retry||1))-PP.x.spent)}
-function ELA(){return PP.x.el+(PP.x.at?Date.now()-PP.x.at:0)}
-function STG(){return'<div class="stage" id="pw"><canvas id="pcv" width="720" height="540"></canvas></div>'}
-function SLOTS(){var o="",i;for(i=0;i<PP.m.ans.length;i++){var c=PP.m.ans.charAt(i);if(c===" "){o+='<span class="sl sp"></span>';continue}var s=PP.x.let.indexOf(i)>=0||PP.x.state!=="open";o+='<span class="sl'+(s?"":" h")+'">'+(s?E(c.toUpperCase()):"?")+'</span>'}return o}
-function HD(a){return'<div class="ph"><button class="bk" data-act="pclose">←</button><div class="cno">ДЕЛО '+CN(PP.m)+'<small>'+E(PP.m.author.name)+' · '+"⭐".repeat(PP.m.diff)+' · '+E(PP.p.name)+'</small></div><div class="pw"><div class="tmr"><span>ВРЕМЯ</span><b id="ptm">'+T(a?PP.x.el:ELA())+'</b></div><div class="pot"><span>НАГРАДА</span><b id="potV">'+(a?(PP.x.state==="solved"?PP.x.res.fin:0):POT())+'</b></div></div></div>'}
-function RP(){var m=PP.m,x=PP.x;
-Q("#play").innerHTML='<div class="pl">'+HD(false)+'<div class="psb">'+STG()+'</div><div class="slots" id="psl">'+SLOTS()+'</div></div><div class="pr"><div class="tools"><button class="pb" data-act="dec"><i>🔓</i><span class="t">Проявить</span><span class="c" id="tdc">−25 XP</span></button><button class="pb'+(x.loupe?" on":"")+'" data-act="loupe"><i>🔍</i><span class="t">Лупа</span><span class="c" id="tlc">'+(x.loupe?"ВКЛ":"−40 XP")+'</span></button><button class="pb" data-act="letter"><i>🔤</i><span class="t">Буква</span><span class="c">−30 XP</span></button></div>'+(m.gps?'<div class="gps"><button class="btn bg sm" data-act="gps">📍 Я на месте?</button><div class="heat" id="gh">Проверь по GPS<small>радиус ±'+m.gps.r+' м</small></div></div>':'')+(m.decoys.length?'<div class="quiz">'+x.opts.map(function(o,i){return'<button class="opt" data-act="guess" data-i="'+i+'">'+E(o)+'</button>'}).join("")+'</div>':'<div class="fa"><input type="text" id="fi" class="g2" placeholder="Что это за место?"><button class="btn sm" data-act="freeans">Ответ</button></div>')+'<div class="att"><span class="tn mu">ПОПЫТКИ</span><div class="dots" id="dots">'+[0,1,2].map(function(i){return'<span class="dot'+(i<x.att?"":" off")+'"></span>'}).join("")+'</div><button class="btn bw sm" data-act="give" style="margin-left:auto">Сдаться</button></div><div class="pfr" id="pfr"><button class="btn bw sm g2" data-act="proof">📸 Фото-доказательство +30</button></div></div>';
-TLS();if(x.proof)PFT();PP.tm=setInterval(function(){var t=Q("#ptm");if(t)t.textContent=T(ELA())},1000);
-MB(m).then(function(b){if(!PP)return;PP.b=b;PP.e=EF(b,m,EF2());REQ()}).catch(function(){TS("⚠️","Фото не загрузилось")})}
-function REQ(){if(!PP||!PP.b)return;var c=Q("#pcv");if(c)CP(c.getContext("2d"),PP.b,PP.e,C(EF2()*1.2,0,1),PP.lp.on?PP.lp:null)}
-function SPEND(c){PP.x.spent+=c;Q("#potV").textContent=POT();SAVE()}
-function TLS(){var x=PP.x,d=Q('[data-act="dec"]');if(x.step>=3){d.disabled=true;Q("#tdc").textContent="ОТКРЫТО"}else Q("#tdc").textContent="−"+DC[x.step]+" XP";Q("#tlc").textContent=x.loupe?(PP.lp.on?"ВКЛ":"ВЫКЛ"):"−40 XP";A("#play .pb")[1].classList.toggle("on",x.loupe)}
-function UDEC(){if(PP.lock||PP.x.step>=3)return;SPEND(DC[PP.x.step]);PP.x.step++;S.p("hint");PP.e=EF(PP.b,PP.m,EF2());REQ();TLS()}
-function ULOU(){if(PP.lock)return;if(!PP.x.loupe){SPEND(40);PP.x.loupe=true;PP.lp.on=true;S.p("hint");var w=Q("#pw");if(w&&!w.querySelector(".hint"))w.insertAdjacentHTML("beforeend",'<div class="hint">🔍 Води пальцем по фото!</div>');Q("#pcv").style.touchAction="none"}else{PP.lp.on=!PP.lp.on;Q("#pcv").style.touchAction=PP.lp.on?"none":"auto"}REQ();TLS()}
-function ULET(){if(PP.lock)return;var ix=[];PP.m.ans.split("").forEach(function(c,i){if(c!==" "&&PP.x.let.indexOf(i)<0)ix.push(i)});if(!ix.length)return;SPEND(30);PP.x.let.push(ix[Math.floor(Math.random()*ix.length)]);Q("#psl").innerHTML=SLOTS();S.p("hint")}
-function GUESS(v,b){if(PP.lock)return;if(N(v)===N(PP.m.ans)){if(b)b.classList.add("good");WIN("quiz");return}
-PP.x.att--;SPEND(20);S.p("no");VB(80);if(b)b.classList.add("bad");else if(Q("#fi"))Q("#fi").value="";
-Q("#dots").innerHTML=[0,1,2].map(function(k){return'<span class="dot'+(k<PP.x.att?"":" off")+'"></span>'}).join("");
-if(PP.x.att<=0)setTimeout(LOSE,450);else TS("❌","Мимо! Осталось попыток: "+PP.x.att)}
-function GPS(){if(PP.lock||!PP.m.gps)return;var b=Q('[data-act="gps"]');if(b.disabled)return;if(!navigator.geolocation){TS("📍","GPS недоступен");return}
-b.disabled=true;S.p("hint");navigator.geolocation.getCurrentPosition(function(pos){if(!PP)return;var d=DV(pos.coords.latitude,pos.coords.longitude,PP.m.gps.lat,PP.m.gps.lng),r=PP.m.gps.r,h=Q("#gh");
-if(d<=r){h.innerHTML="🔥 ГОРЯЧО! Ты на месте!";WIN("gps");return}
-var t,c;if(d<=r*2.5){t="🔥 ОЧЕНЬ ГОРЯЧО";c="#E0761C"}else if(d<=r*6){t="🌡 ТЕПЛЕЕ";c="#E0761C"}else if(d<=r*15){t="🧊 ПРОХЛАДНО";c="#1E90CE"}else{t="❄️ ХОЛОДНО";c="#1E90CE"}
-h.innerHTML='<span style="color:'+c+'">'+t+'</span><small>примерно '+Math.round(d/10)*10+' м</small>';
-var s=15;b.textContent=s+" с";PP.pg=setInterval(function(){s--;if(!PP){clearInterval(PP.pg);return}if(s<=0){clearInterval(PP.pg);b.disabled=false;b.textContent="📍 Я на месте?"}else b.textContent=s+" с"},1000)},function(){if(!PP)return;b.disabled=false;TS("📍","GPS не ответил")},{enableHighAccuracy:true,timeout:9000})}
-function PROOF(){if(PP.lock)return;var i=document.createElement("input");i.type="file";i.accept="image/*";i.capture="environment";i.onchange=function(){var f=i.files[0];if(!f)return;var r=new FileReader();r.onload=function(){LI(String(r.result)).then(function(im){if(!PP)return;var c=document.createElement("canvas"),s=Math.min(1,480/Math.max(im.width,im.height));c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);PP.x.proof=c.toDataURL("image/jpeg",.6);SAVE();S.p("shot");PFT();TS("📸","Доказательство есть! +30 XP")})};r.readAsDataURL(f)};i.click()}
-function PFT(){var r=Q("#pfr");if(r)r.innerHTML='<img class="pft" src="'+PP.x.proof+'"><span class="tn" style="color:var(--lm2);font-weight:900">Доказательство ✓ +30 XP</span>'}
-function LOCK(){PP.lock=true;A("#play .pb,#play .opt,#play .btn").forEach(function(b){if(b.dataset.act!=="pclose")b.disabled=true})}
-function WIN(meth){if(PP.lock)return;LOCK();var x=PP.x,m=PP.m,p=PP.p,b=SN(p),e=ELA();x.el=e;x.at=0;
-var bs=Math.round(BX2(m)*(x.retry||1)),hn=Math.min(x.spent,bs-20),tb=e<6e5?50:(e<18e5?25:0),fb=meth==="gps"?60:0,pb=x.proof?30:0,fin=Math.max(20,bs-hn)+tb+fb+pb;
-x.res={bs:bs,hn:hn,tb:tb,fb:fb,pb:pb,fin:fin};x.state="solved";p.xp+=fin;p.solved++;p.best=Math.max(p.best,fin);
-var nh2=x.step===0&&!x.loupe&&!x.let.length;if(nh2)p.clean++;if(meth==="gps")p.field++;
-BG(p,"first");if(nh2)BG(p,"clean");if(meth==="gps")BG(p,"field");CH(p,b);SAVE();
-if(NET.st==="on"){if(NET.host){if(D.hunt){var s=D.hunt.seek.filter(function(z){return z.id===p.id})[0];if(s){s.st="ok";s.at=Date.now()}}nState()}else pub("a",{t:"found",from:D.meId});nSync()}
-clearInterval(PP.tm);clearInterval(PP.pg);S.p("win");VB([30,40,60]);Q("#pw").insertAdjacentHTML("beforeend",'<div class="bs2 win"><span>🎉 НАШЁЛ!</span></div>');
-var r=Q("#pw").getBoundingClientRect();BU(r.left+r.width/2,r.top+r.height/2,140);setTimeout(function(){if(PP)RA()},1200)}
-function LOSE(){if(PP.lock)return;LOCK();PP.x.el=ELA();PP.x.at=0;PP.x.state="failed";SAVE();if(NET.st==="on"&&!NET.host)pub("a",{t:"gave",from:D.meId});clearInterval(PP.tm);clearInterval(PP.pg);S.p("no");Q("#pw").insertAdjacentHTML("beforeend",'<div class="bs2 lose"><span>😅 НЕ ВЫШЛО</span></div>');setTimeout(function(){if(PP)RA()},1200)}
-function RA(){var m=PP.m,x=PP.x,s=x.state==="solved",r=x.res;clearInterval(PP.tm);clearInterval(PP.pg);
-Q("#play").innerHTML='<div class="pl">'+HD(true)+'<div class="psb">'+STG()+'<div class="bs2 '+(s?"win":"lose")+'"><span>'+(s?"🎉 НАШЁЛ!":"😅 НЕ ВЫШЛО")+'</span></div></div><div style="margin-top:8px"><input type="range" id="cmp" data-inp="cmp" min="0" max="100" value="50"><div class="row" style="justify-content:space-between"><span class="tn mu">← ФОТО</span><span class="tn mu">ШИФР →</span></div></div></div><div class="pr"><div class="ar2"><div class="tn mu">ЭТО МЕСТО</div><div class="a'+(s?"":" bad")+'">'+E(m.ans)+'</div></div>'+(s?'<div class="brk"><div class="bl"><span>Награда дела</span><b>'+r.bs+'</b></div><div class="bl neg"><span>Подсказки</span><b>−'+r.hn+'</b></div><div class="bl pos"><span>Быстро нашёл</span><b>+'+r.tb+'</b></div><div class="bl pos"><span>GPS на месте</span><b>+'+r.fb+'</b></div><div class="bl pos"><span>Фото-доказательство</span><b>+'+r.pb+'</b></div><div class="bl tot"><span>ИТОГО</span><b>+'+r.fin+' XP</b></div></div>':'')+(x.proof?'<img src="'+x.proof+'" style="border-radius:15px;border:4px solid var(--lm);max-height:130px;width:100%;object-fit:cover;margin-bottom:10px">':'')+'<div class="rb">'+(s?"":'<button class="btn bo" data-act="retry">↺ Ещё раз</button>')+'<button class="btn bg" data-act="next">▶ Дальше</button><button class="btn bw" data-act="pclose">🏠 Штаб</button></div></div>';
-MB(m).then(function(b){if(!PP)return;PP.b=b;PP.e=EF(b,m,m.strength);CD()})}
-function CD(){var c=Q("#pcv"),s=Q("#cmp");if(!c||!s||!PP||!PP.b)return;var x=c.getContext("2d"),v=+s.value,lx=720*v/100;x.clearRect(0,0,720,540);x.drawImage(PP.b,0,0);x.save();x.beginPath();x.rect(lx,0,720,540);x.clip();x.globalAlpha=C(PP.m.strength*1.2,0,1);x.drawImage(PP.e,0,0);x.restore();x.globalAlpha=1;x.strokeStyle="#FF5FA2";x.lineWidth=5;x.beginPath();x.moveTo(lx,0);x.lineTo(lx,540);x.stroke()}
-var OB=DL();
-function ROB(){Q("#obAv").innerHTML=AV(OB,144);Q("#obS").innerHTML=SK.map(function(c,i){return'<button class="co'+(OB.skin===i?" on":"")+'" data-act="obs" data-s="'+i+'" style="background:'+c+'"></button>'}).join("");A("#obG button").forEach(function(b){b.classList.toggle("on",b.dataset.g===OB.g)})}
-function NU(u){u=String(u||"").trim();if(!u)return"";if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u="https://"+u;return u}
-function CHAT(){var u=NU(D.set.chat);if(!u){TS("💬","Укажи адрес чата");GO("set");return}var a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();TS("💬","Открываю чат…")}
-function FULL(){try{var p=document.documentElement.requestFullscreen();if(p&&p.then)p.then(function(){try{screen.orientation.lock("landscape")}catch(e){}}).catch(function(){})}catch(e){}}
-function PF(cb){var i=document.createElement("input");i.type="file";i.accept=".json,application/json";i.onchange=function(){var f=i.files[0];if(!f)return;var r=new FileReader();r.onload=function(){cb(String(r.result))};r.readAsText(f)};i.click()}
-document.addEventListener("click",function(e){var t=e.target.closest?e.target.closest("[data-act]"):null;if(!t)return;var a=t.dataset.act,id=t.dataset.id;
-if(a==="nav"){CM();GO(t.dataset.v)}
-else if(a==="sound"){D.set.snd=!D.set.snd;S.i();if(S.g)S.g.gain.value=D.set.snd?.8:0;SAVE();TOP();if(V==="set")ST()}
-else if(a==="full"){if(document.fullscreenElement)document.exitFullscreen();else FULL()}
-else if(a==="chat")CHAT();else if(a==="closem")CM();else if(a==="reload")location.reload();
-e
+
+<div id="app">
+  <aside id="rail">
+    <div class="logo"><span>🎒</span>ФОТОСЛЕД</div>
+    <button class="nb on" data-act="nav" data-v="hq"><i>🏠</i><span>Штаб</span></button>
+    <button class="nb" data-act="nav" data-v="squad"><i>🌐</i><span>Отряд</span><b id="netBadge">1</b></button>
+    <button class="nb" data-act="nav" data-v="lab"><i>📷</i><span>Создать</span></button>
+    <button class="nb" data-act="nav" data-v="rate"><i>🏆</i><span>Рейтинг</span></button>
+    <button class="nb" data-act="nav" data-v="agent"><i>🎨</i><span>Агент</span></button>
+    <button class="nb" data-act="nav" data-v="set"><i>⚙️</i><span>Настройки</span></button>
+    <div class="spc"></div>
+    <button id="chat" data-act="chat">💬<span>Чат отряда</span></button>
+    <button id="rAg" data-act="nav" data-v="agent"><span class="av" id="rAv"></span><span class="g2"><b id="rNm">Агент</b><i id="rRk">Новичок</i></span></button>
+  </aside>
+
+  <div id="main">
+    <header id="top">
+      <div id="vt">ДОСКА ДЕЛ</div>
+      <div class="tr">
+        <button class="ib" data-act="help">❓</button>
+        <button class="ib" data-act="full">⛶</button>
+        <button class="ib" id="sndB" data-act="sound">🔊</button>
+        <button id="tAg" data-act="nav" data-v="agent"><span class="av" id="tAv"></span><span class="g2"><b id="tNm">Агент</b><i id="tXp">0 XP</i></span></button>
+      </div>
+    </header>
+
+    <div id="cont">
+      <section class="v on" id="v-hq">
+        <div id="guide"></div><div id="leadB"></div><div id="strip"></div>
+        <div class="bt">
+          <button class="btn bs sm" data-act="import">📥 Файл дела</button>
+          <input type="text" id="q" data-inp="q" class="g2" placeholder="Поиск дела…" style="min-width:120px">
+          <div class="chips" id="chips"></div>
+          <select id="sort" data-chg="sort"><option value="new">Новые</option><option value="reward">Награда ↓</option><option value="diff">Сложность ↑</option></select>
+        </div>
+        <div id="board"></div>
+      </section>
+
+      <section class="v" id="v-squad">
+        <div id="net"></div>
+        <div class="two" style="margin-top:12px"><div id="sqL"></div><div id="sqR"></div></div>
+      </section>
+
+      <section class="v" id="v-lab">
+        <div class="two">
+          <div>
+            <div class="lh"><b>1</b><span>КАДР</span></div>
+            <div class="stage"><canvas id="lc" width="480" height="360"></canvas></div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn g2" data-act="capture">📸 Снять место</button>
+              <button class="btn bw sm" id="clrB" data-act="clearphoto" style="display:none">✕</button>
+            </div>
+            <p class="note" id="note"></p>
+            <div style="margin-top:8px"><span class="chip" id="auth"></span></div>
+          </div>
+          <div>
+            <div class="lh"><b>2</b><span>ШИФР</span></div>
+            <div class="fx" id="fch"></div>
+            <div class="sr"><span class="tn">СИЛА</span><input type="range" id="strR" data-inp="str" min="10" max="95" value="62"><b id="strV">62%</b></div>
+            <label class="sw"><input type="checkbox" id="mirC" data-chg="mir"><span class="t"></span><span class="l">Зеркало</span></label>
+            <div class="row" style="margin-top:6px">
+              <button class="btn bs sm g2" data-act="dice">🎲 Случайно</button>
+              <button class="btn bw sm g2" data-act="resetfx">↺ Сброс</button>
+            </div>
+            <div class="
