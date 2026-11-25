@@ -250,6 +250,54 @@ table.rt{width:100%;border-collapse:collapse;min-width:540px}
 @media (orientation:portrait){#rot{display:flex}body.rok #rot{display:none}}
 @media (max-width:640px){#app{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}#rail{flex-direction:row;align-items:center;border-right:none;border-bottom:5px solid #fff;overflow-x:auto}.logo span,.spc,#chat span,#rAg span{display:none}.logo{font-size:11px}.nb{width:auto}.nb span{display:none}#chat,#rAg{width:auto}#main{height:auto;min-height:0}.two,.obg{grid-template-columns:1fr}#play.on,#hunt.on{grid-template-columns:1fr;overflow-y:auto}.pr{overflow:visible}.psb .stage{width:100%}#rcv{width:min(100%,320px)}}
 @media (max-height:430px){.nb{min-height:37px;padding:5px 9px;font-size:12px}#top{height:47px}#cont{padding:9px 12px 16px}.psb .stage{width:min(100%,calc((100dvh - 134px)*1.3333))}#rcv{width:min(100%,calc(100dvh - 124px))}.reel{height:132px}}
+/* низ экрана: ничего не обрезается */
+#app{height:100dvh}
+#main{min-height:0}
+#cont{min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+.pr{min-height:0;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+#play.on,#hunt.on{padding-bottom:calc(11px + env(safe-area-inset-bottom))}
+#toasts{bottom:calc(13px + env(safe-area-inset-bottom))}
+#err{bottom:calc(10px + env(safe-area-inset-bottom))}
+#ob{padding-bottom:calc(15px + env(safe-area-inset-bottom))}
+.obg{padding-bottom:6px}
+#mc{max-height:86dvh}
+.rb{padding-bottom:2px}
+@media (max-height:560px){
+#cont{padding-top:10px}
+#guide{gap:7px;margin-bottom:8px}
+.gs{min-width:130px;padding:7px 10px;border-width:3px;border-radius:17px;box-shadow:0 4px 0 rgba(180,150,110,.2)}
+.gs b{width:26px;height:26px;font-size:12px}
+.gs p{font-size:11.5px;line-height:1.25}
+.gs small{font-size:9.5px}
+.gs .btn.sm{min-height:32px;padding:5px 9px}
+#leadB,#strip{padding:8px 11px;margin-bottom:8px;border-width:3px;border-radius:18px;box-shadow:0 4px 0 rgba(180,150,110,.2)}
+#leadB .t{font-size:12.5px}
+#leadB .tn{font-size:10.5px}
+#leadB .av svg{width:34px;height:34px}
+#strip .nm{font-size:13.5px}
+#strip .rk{font-size:10px}
+#strip .av svg{width:38px;height:38px}
+.xpb{height:9px;margin-top:4px}
+.goal{font-size:10px;padding:6px 9px;max-width:210px}
+.bt{margin-bottom:8px;gap:7px}
+#board{gap:9px}
+.case{min-height:88px;padding:8px}
+.th{width:84px;height:64px}
+.reel{height:140px}
+.pc .ped svg{width:120px;height:120px}
+}
+@media (max-height:430px){
+#cont{padding-top:8px}
+.gs{padding:6px 9px}
+.gs p{font-size:11px}
+.gs small{font-size:9px}
+#leadB,#strip{padding:7px 10px;margin-bottom:7px}
+#leadB .av svg{width:30px;height:30px}
+#strip .av svg{width:34px;height:34px}
+.bt{margin-bottom:7px}
+.reel{height:126px}
+.pc .ped svg{width:104px;height:104px}
+}
 </style></head><body>
 <div id="bg"><div id="sun"></div><div class="cl c1"></div><div class="cl c2"></div>
 <svg id="hills" viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0 150Q150 80 320 140T650 120T950 150T1200 110V300H0Z" fill="#8FD96A"/><path d="M0 200Q200 140 420 195T800 175T1200 205V300H0Z" fill="#6FC24A"/><path d="M0 250Q250 215 520 250T1000 240T1200 260V300H0Z" fill="#4E9E2E"/><g><rect x="150" y="185" width="10" height="55" fill="#8A5A32"/><circle cx="155" cy="175" r="34" fill="#5FB83C"/><circle cx="132" cy="188" r="22" fill="#6FC24A"/><circle cx="178" cy="188" r="22" fill="#6FC24A"/></g><g><rect x="1040" y="195" width="10" height="55" fill="#8A5A32"/><circle cx="1045" cy="185" r="30" fill="#5FB83C"/><circle cx="1024" cy="196" r="20" fill="#6FC24A"/><circle cx="1066" cy="196" r="20" fill="#6FC24A"/></g></svg></div>
@@ -356,9 +404,10 @@ function IB(id){return IT.filter(function(x){return x.id===id})[0]}
 var LS="fotosled9",BX={1:120,2:180,3:260},FL=[["pixel","Мозаика"],["fog","Туман"],["invert","Негатив"]],PL=["Скейт-парк","Школьный двор","Магазин","Мост","Аллея","Гаражи","Стадион","Остановка"];
 var D=null;
 function MK(n,l,xp,so,cr,be,le,bd){return{id:U(),name:n,look:Object.assign(DL(),l),xp:xp,solved:so,created:cr,best:be,clean:0,field:0,led:le,badges:bd}}
-function SEED(){var p=[MK("Даша",{g:"f",skin:1,hair:"bob",hc:0,eye:0,acc:AC[0],hat:"panama",frm:"pink"},780,6,3,260,2,["first","maker","lead"]),MK("Башмачок",{g:"m",skin:2,hair:"spike",hc:1,eye:1,acc:AC[2],hat:"cap"},520,4,2,220,1,["first","maker"]),MK("Рюкзак",{g:"m",skin:3,hair:"curl",hc:2,eye:5,acc:AC[4]},300,2,1,190,0,["first"]),MK("Звёздочка",{g:"f",skin:0,hair:"pony",hc:3,eye:4,acc:AC[1]},180,1,1,170,0,["first","maker"]),MK("Карта",{g:"m",skin:4,hair:"short",hc:0,eye:2,acc:AC[3]},90,1,0,120,0,["first"]),MK("Лисёнок",{g:"f",skin:5,hair:"long",hc:4,eye:3,acc:AC[5]},0,0,0,0,0,[])];
-var t=Date.now();function M(i,ty,sd,a,dc,df,f,s,au,h){return{id:"d"+i,ans:a,decoys:dc,diff:df,filter:f,strength:s,mirror:false,gps:null,scene:{t:ty,s:sd},img:null,authorId:au.id,author:{name:au.name,look:Object.assign({},au.look)},ts:t-h*36e5}}
-return{v:9,players:p,activeId:p[0].id,leaderId:null,leaderMode:"random",inGame:p.map(function(x){return x.id}),missions:[M(1,"yard",11,"Качели во дворе",["Скейт-парк","Школьный двор","Магазин"],1,"pixel",.62,p[1],2),M(2,"town",33,"Магазин у парка",["Остановка","Стадион","Гаражи"],2,"fog",.6,p[2],5),M(3,"yard",55,"Горка во дворе",["Мост","Аллея","Скейт-парк"],1,"invert",.55,p[3],9),M(4,"town",77,"Вывеска на углу",["Аллея","Мост","Остановка"],3,"pixel",.8,p[0],14)],prog:{},hunt:null,set:{snd:true,vib:true,chat:"https://max.ru/",filter:"all",sort:"new",onboard:false,af:true}}}
+function SEED(){var p=[MK("Агент",{g:"f",skin:1,hair:"short",hc:0,eye:2,acc:AC[0]},0,0,0,0,0,[])];
+var t=Date.now(),au={name:"Тренировка",look:{g:"f",skin:1,hair:"bob",hc:0,eye:0,acc:AC[4],hat:"panama"}};
+function M(i,ty,sd,a,dc,df,f,s,h){return{id:"d"+i,ans:a,decoys:dc,diff:df,filter:f,strength:s,mirror:false,gps:null,scene:{t:ty,s:sd},img:null,authorId:null,author:au,ts:t-h*36e5}}
+return{v:9,players:p,activeId:p[0].id,leaderId:null,leaderMode:"random",inGame:[p[0].id],missions:[M(1,"yard",11,"Качели во дворе",["Скейт-парк","Школьный двор","Магазин"],1,"pixel",.62,2),M(2,"town",33,"Магазин у парка",["Остановка","Стадион","Гаражи"],2,"fog",.6,5)],prog:{},hunt:null,set:{snd:true,vib:true,chat:"https://max.ru/",filter:"all",sort:"new",onboard:false,af:true}}}
 function LOAD(){try{var r=localStorage.getItem(LS);if(r){var s=JSON.parse(r);if(s&&s.v===9&&s.players&&s.players.length){D=s;D.set=Object.assign(SEED().set,s.set||{});D.players.forEach(function(p){p.look=Object.assign(DL(),p.look||{});if(p.look.g!=="m")p.look.g="f"});return}}}catch(e){}D=SEED();SAVE()}
 function SAVE(){try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}}
 function ME(){return D.players.filter(function(p){return p.id===D.activeId})[0]||D.players[0]}
@@ -631,14 +680,4 @@ else if(k==="rad"){Q("#radV").textContent=t.value+" м";if(LB.pin)LB.pin.r=+t.va
 document.addEventListener("change",function(e){var t=e.target,k=t.dataset?t.dataset.chg:null;if(!k)return;
 if(k==="sort"){D.set.sort=t.value;SAVE();BOARD()}else if(k==="mir"){LB.mirror=t.checked;LDR()}
 else if(k==="snd"){D.set.snd=t.checked;S.i();if(S.g)S.g.gain.value=D.set.snd?.8:0;SAVE();TOP()}
-else if(k==="vib"){D.set.vib=t.checked;SAVE();VB(30)}else if(k==="af"){D.set.af=t.checked;SAVE()}},false);
-document.addEventListener("pointerdown",function(e){if(e.target.id==="rcv"){RTAP(e);return}
-if(e.target.id==="pcv"&&PP&&PP.lp.on){var c=e.target,r=c.getBoundingClientRect();PP.lp.x=C((e.clientX-r.left)/r.width*720,0,720);PP.lp.y=C((e.clientY-r.top)/r.height*540,0,540);try{c.setPointerCapture(e.pointerId)}catch(x){}REQ()}},false);
-document.addEventListener("pointermove",function(e){if(e.target.id==="pcv"&&PP&&PP.lp.on&&(e.buttons||e.pointerType==="touch")){var c=e.target,r=c.getBoundingClientRect();PP.lp.x=C((e.clientX-r.left)/r.width*720,0,720);PP.lp.y=C((e.clientY-r.top)/r.height*540,0,540);REQ()}},false);
-addEventListener("resize",SZ);
-if(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App)Capacitor.Plugins.App.addListener("backButton",function(){if(Q("#modal").classList.contains("on"))CM();else if(HH)CH2();else if(PP)CC();else if(V!=="hq")GO("hq");else Capacitor.Plugins.App.minimizeApp()});
-LOAD();SZ();TOP();HQ();LCH();LM();LBA();
-if(!D.set.onboard){OB=Object.assign(DL(),ME().look);Q("#obName").value=ME().name;Q("#ob").classList.add("on");ROB()}
-window.FSOK=1;
-})();
-</script></body></html>
+e
